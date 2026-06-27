@@ -655,39 +655,8 @@ function showToast(msg) {
 }
 
 // ── SEED DATA ─────────────────────────────────────────────────────────────────
-function seedIfEmpty() {
-  const hasAny = Object.values(ST.david).some(v=>v.owned) || Object.values(ST.emily).some(v=>v.owned);
-  if (hasAny) return;
-  // David — confirmed from text labels in photos
-  ST.david['water-normal']   = { owned:true, level:5 };
-  ST.david['king-gold']      = { owned:true, level:3 };
-  ST.david['striker-normal'] = { owned:true, level:2 };
-  // Emily — confirmed from info panels
-  ST.emily['water-normal']   = { owned:true, level:5 };
-  ST.emily['striker-normal'] = { owned:true, level:2 };
-  // Emily — visual ID (high confidence)
-  ST.emily['fire-normal']    = { owned:true, level:5 };
-  ST.emily['duck-normal']    = { owned:true, level:5 };
-  ST.emily['duck-gold']      = { owned:true, level:3 };
-  ST.emily['demon-normal']   = { owned:true, level:4 };
-  ST.emily['grim-normal']    = { owned:true, level:5 };
-  save();
-}
-
-// Run once to add Emily's photo-identified sprites to an existing save
-function migrateEmilyV2() {
-  if (localStorage.getItem('fnST3_v2')) return;
-  const add = (k, level) => { if (!ST.emily[k]?.owned) ST.emily[k] = { owned:true, level }; };
-  add('water-normal',   5);
-  add('striker-normal', 2);
-  add('fire-normal',    5);
-  add('duck-normal',    5);
-  add('duck-gold',      3);
-  add('demon-normal',   4);
-  add('grim-normal',    5);
-  localStorage.setItem('fnST3_v2', '1');
-  save();
-}
+function seedIfEmpty() {}
+function migrateEmilyV2() {}
 
 // ── QUICK ADD ─────────────────────────────────────────────────────────────────
 let qa = { sprite: null, variant: 'normal', owner: null, level: 1 };
