@@ -14,16 +14,14 @@
   --text: #e0e0ff;
   --dim: #7070a0;
   --accent: #4488ff;
-  --david: #4488ff;
-  --emily: #ff44aa;
+  --p1: #4488ff;
+  --p2: #ff44aa;
   --both: #44cc88;
 }
 body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
 
-/* TOP BAR — header + tabs pinned together */
 .top-bar { position: sticky; top: 0; z-index: 200; }
 
-/* HEADER */
 header {
   background: linear-gradient(135deg, #12082a 0%, #081228 100%);
   border-bottom: 2px solid #3355cc;
@@ -35,26 +33,25 @@ header h1 { font-size: 17px; font-weight: 900; letter-spacing: 2px; color: #fff;
 header h1 span { color: #66aaff; }
 .hstats { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; align-items: center; }
 .hstat { font-size: 11px; font-weight: 700; padding: 3px 7px; border-radius: 12px; white-space: nowrap; }
-.hstat.t { background: rgba(68,204,136,0.15); color: #88ffbb; border: 1px solid rgba(68,204,136,0.25); }
-.hstat.d { background: rgba(68,136,255,0.15); color: #88aaff; border: 1px solid rgba(68,136,255,0.25); }
-.hstat.e { background: rgba(255,68,170,0.15); color: #ff88cc; border: 1px solid rgba(255,68,170,0.25); }
+.hstat.t  { background: rgba(68,204,136,0.15); color: #88ffbb; border: 1px solid rgba(68,204,136,0.25); }
+.hstat.p1 { background: rgba(68,136,255,0.15); color: #88aaff; border: 1px solid rgba(68,136,255,0.25); }
+.hstat.p2 { background: rgba(255,68,170,0.15); color: #ff88cc; border: 1px solid rgba(255,68,170,0.25); }
 .share-btn { background: rgba(68,136,255,0.15); border: 1px solid rgba(68,136,255,0.35); color: #88aaff; border-radius: 12px; padding: 4px 9px; font-size: 11px; font-weight: 700; cursor: pointer; white-space: nowrap; }
 .share-btn:active { background: rgba(68,136,255,0.3); }
+.gear-btn { background: none; border: none; color: var(--dim); font-size: 16px; cursor: pointer; padding: 4px; line-height: 1; -webkit-tap-highlight-color: transparent; }
+.gear-btn:active { color: var(--text); }
 .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #22cc66; color: #fff; font-weight: 700; font-size: 13px; padding: 10px 20px; border-radius: 20px; z-index: 9999; pointer-events: none; opacity: 0; transition: opacity 0.2s; white-space: nowrap; }
 .toast.show { opacity: 1; }
 
-/* TABS */
 .tabs { display: flex; background: var(--surface); border-bottom: 1px solid var(--border); }
 .tab { flex: 1; padding: 10px 6px; text-align: center; cursor: pointer; font-weight: 700; font-size: 12px; color: var(--dim); border-bottom: 3px solid transparent; letter-spacing: 0.5px; text-transform: uppercase; transition: all 0.15s; user-select: none; }
 .tab.active { color: #fff; border-bottom-color: var(--accent); background: rgba(68,136,255,0.07); }
 
-/* FILTER BAR */
 .filter-bar { display: flex; gap: 6px; padding: 8px 10px; background: var(--surface2); border-bottom: 1px solid var(--border); overflow-x: auto; scrollbar-width: none; position: sticky; z-index: 99; }
 .filter-bar::-webkit-scrollbar { display: none; }
 .fbtn { padding: 5px 11px; border-radius: 20px; border: 1px solid var(--border); background: transparent; color: var(--dim); cursor: pointer; white-space: nowrap; font-size: 11px; font-weight: 700; transition: all 0.15s; user-select: none; }
 .fbtn.active { background: var(--accent); border-color: var(--accent); color: #fff !important; }
 
-/* DROPDOWN FILTER BAR */
 .dd-bar { display: flex; gap: 6px; padding: 8px 10px; background: var(--surface2); border-bottom: 1px solid var(--border); position: sticky; z-index: 99; }
 .dd { flex: 1; position: relative; }
 .dd-btn { width: 100%; padding: 7px 6px; background: var(--surface); border: 1px solid var(--border); color: var(--dim); border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 3px; white-space: nowrap; -webkit-tap-highlight-color: transparent; }
@@ -71,7 +68,6 @@ header h1 span { color: #66aaff; }
 .af-chip .af-x { font-size: 10px; opacity: 0.7; margin-left: 2px; }
 .af-none { font-size: 11px; color: var(--dim); opacity: 0.5; font-style: italic; }
 
-/* ── MATCH VIEW ── */
 .match-grid { padding: 10px; display: flex; flex-direction: column; gap: 8px; }
 .match-card { background: var(--surface); border-radius: 10px; border-left: 4px solid; padding: 11px 12px; display: flex; gap: 11px; align-items: flex-start; }
 .micon { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 23px; flex-shrink: 0; border: 2px solid transparent; }
@@ -88,15 +84,9 @@ header h1 span { color: #66aaff; }
 .chip.max     { background: rgba(255,208,0,0.2); color: #ffd060; font-weight: 900; }
 .mfoot { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 6px; }
 .mchips { display: flex; gap: 5px; flex-wrap: wrap; }
-.mowner-badges { display: flex; gap: 4px; flex-shrink: 0; }
-.own-badge { font-size: 10px; font-weight: 900; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
-.ob-d { background: var(--david); color: #fff; }
-.ob-e { background: var(--emily); color: #fff; }
 
-/* ── COLLECTION VIEW ── */
 .coll-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 8px; padding: 10px; }
 @media (max-width: 360px) { .coll-grid { grid-template-columns: repeat(2, 1fr); } }
-
 .ccard { background: var(--surface); border-radius: 10px; border: 1px solid var(--border); overflow: hidden; position: relative; }
 .ctop { padding: 11px 10px 8px; display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; }
 .cicon { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 25px; border: 2px solid; }
@@ -104,33 +94,29 @@ header h1 span { color: #66aaff; }
 .cname { font-weight: 800; font-size: 12px; line-height: 1.25; }
 .cability { font-size: 10px; color: var(--dim); line-height: 1.4; }
 .catline { font-size: 10px; }
-
 .cdivider { height: 1px; background: var(--border); }
 
-/* VARIANT GRID inside card */
 .variant-table { padding: 7px 8px 8px; width: 100%; }
 .vtable-head { display: grid; grid-template-columns: 36px repeat(4, 1fr); gap: 3px; margin-bottom: 4px; }
 .vth { font-size: 8px; font-weight: 900; letter-spacing: 0.5px; text-align: center; }
 .vtable-row { display: grid; grid-template-columns: 36px repeat(4, 1fr); gap: 3px; margin-bottom: 6px; }
 .vrow-label { font-size: 10px; font-weight: 800; display: flex; align-items: flex-start; padding-top: 3px; }
-.vrow-label.d { color: #88aaff; }
-.vrow-label.e { color: #ff88cc; }
+.vrow-label.p1 { color: #88aaff; }
+.vrow-label.p2 { color: #ff88cc; }
 .vcell { display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
 .vcheck { width: 22px; height: 22px; border-radius: 5px; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 12px; transition: all 0.12s; }
-.vcheck.on-david { background: var(--david); border-color: var(--david); color: #fff; }
-.vcheck.on-emily { background: var(--emily); border-color: var(--emily); color: #fff; }
+.vcheck.on-p1 { background: var(--p1); border-color: var(--p1); color: #fff; }
+.vcheck.on-p2 { background: var(--p2); border-color: var(--p2); color: #fff; }
 .vcheck.mastered { box-shadow: 0 0 6px #ffd06099; }
 select.vlvl { background: var(--surface2); border: 1px solid var(--border); color: var(--text); border-radius: 4px; padding: 1px 1px; font-size: 9px; cursor: pointer; width: 100%; text-align: center; }
 select.vlvl.mastered { border-color: #ffd060; color: #ffd060; }
 .chip.max { background: rgba(255,208,0,0.2); color: #ffd060; font-weight: 900; letter-spacing: 0.5px; }
 
-/* Owned badge top-right of card */
 .obadge { position: absolute; top: 5px; right: 5px; min-width: 16px; height: 16px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 8px; font-weight: 900; padding: 0 3px; }
-.obadge.d { background: var(--david); color: #fff; }
-.obadge.e { background: var(--emily); color: #fff; }
-.obadge.b { background: var(--both); color: #fff; }
+.obadge.p1   { background: var(--p1);   color: #fff; }
+.obadge.p2   { background: var(--p2);   color: #fff; }
+.obadge.both { background: var(--both); color: #fff; }
 
-/* FLOATING ADD BUTTON */
 .fab {
   position: fixed; bottom: 22px; right: 18px;
   width: 52px; height: 52px; border-radius: 50%;
@@ -144,7 +130,6 @@ select.vlvl.mastered { border-color: #ffd060; color: #ffd060; }
 }
 .fab:active { transform: scale(0.92); }
 
-/* QUICK-ADD SHEET */
 .sheet-overlay {
   position: fixed; inset: 0; background: rgba(0,0,0,0.6);
   z-index: 400; display: none; align-items: flex-end;
@@ -160,7 +145,6 @@ select.vlvl.mastered { border-color: #ffd060; color: #ffd060; }
 .sheet-title { font-size: 15px; font-weight: 900; letter-spacing: 1px; text-align: center; margin-bottom: 14px; color: #fff; }
 .sheet-label { font-size: 10px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--dim); margin-bottom: 6px; }
 
-/* sprite picker */
 .sprite-picker { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 14px; }
 .sp-btn {
   background: var(--surface2); border: 2px solid var(--border);
@@ -173,7 +157,6 @@ select.vlvl.mastered { border-color: #ffd060; color: #ffd060; }
 .sp-name { font-size: 8px; font-weight: 700; text-align: center; color: var(--dim); line-height: 1.2; }
 .sp-btn.sel .sp-name { color: #88aaff; }
 
-/* variant / owner / level pickers */
 .pill-row { display: flex; gap: 7px; margin-bottom: 14px; flex-wrap: wrap; }
 .pill {
   flex: 1; min-width: 52px; padding: 8px 6px; border-radius: 10px;
@@ -181,9 +164,9 @@ select.vlvl.mastered { border-color: #ffd060; color: #ffd060; }
   font-size: 11px; font-weight: 800; text-align: center; cursor: pointer;
   -webkit-tap-highlight-color: transparent; transition: all 0.12s;
 }
-.pill.sel-v  { border-color: #ffd060; background: rgba(255,208,0,0.1); color: #ffd060; }
-.pill.sel-d  { border-color: var(--david); background: rgba(68,136,255,0.12); color: #88aaff; }
-.pill.sel-e  { border-color: var(--emily); background: rgba(255,68,170,0.12); color: #ff88cc; }
+.pill.sel-v  { border-color: #ffd060; background: rgba(255,208,0,0.1);    color: #ffd060; }
+.pill.sel-p1 { border-color: var(--p1); background: rgba(68,136,255,0.12); color: #88aaff; }
+.pill.sel-p2 { border-color: var(--p2); background: rgba(255,68,170,0.12); color: #ff88cc; }
 .pill.sel-l  { border-color: var(--both); background: rgba(68,204,136,0.12); color: #88ffbb; }
 
 .add-btn {
@@ -196,35 +179,76 @@ select.vlvl.mastered { border-color: #ffd060; color: #ffd060; }
 .add-btn:active { opacity: 0.85; }
 .add-btn:disabled { opacity: 0.35; cursor: default; }
 
-/* EMPTY */
 .empty { text-align: center; padding: 50px 20px; color: var(--dim); }
 .empty h3 { font-size: 16px; margin-bottom: 8px; color: var(--text); }
 .empty p { font-size: 12px; line-height: 1.6; max-width: 280px; margin: 0 auto; }
 
-/* LEGEND */
 .legend { margin: 8px 10px 2px; padding: 9px 11px; background: var(--surface); border-radius: 8px; border: 1px solid var(--border); }
 .legend-title { font-size: 10px; font-weight: 900; letter-spacing: 1px; color: var(--dim); text-transform: uppercase; margin-bottom: 5px; }
 .legend-row { font-size: 11px; color: #c0c0dd; margin-bottom: 2px; }
 .legend-row span { font-weight: 700; }
+
+/* NAMES SETUP / SETTINGS MODAL */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.75);
+  z-index: 800; display: none; align-items: center; justify-content: center;
+  padding: 20px;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: #161628; border-radius: 18px; border: 1px solid var(--border);
+  width: 100%; max-width: 340px; padding: 28px 24px;
+}
+.modal h2 { font-size: 16px; font-weight: 900; color: #fff; letter-spacing: 1px; text-align: center; margin-bottom: 6px; }
+.modal p  { font-size: 12px; color: var(--dim); text-align: center; margin-bottom: 22px; line-height: 1.5; }
+.modal-label { font-size: 10px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--dim); margin-bottom: 6px; }
+.modal-input {
+  width: 100%; padding: 11px 13px; border-radius: 10px;
+  border: 1px solid var(--border); background: var(--surface2);
+  color: var(--text); font-size: 14px; font-weight: 700;
+  margin-bottom: 16px; outline: none;
+}
+.modal-input:focus { border-color: var(--accent); }
+.modal-save {
+  width: 100%; padding: 13px; border-radius: 12px;
+  background: linear-gradient(135deg, #4488ff, #6644ff);
+  color: #fff; font-size: 14px; font-weight: 900; letter-spacing: 1px;
+  border: none; cursor: pointer; margin-top: 4px;
+}
+.modal-save:active { opacity: 0.85; }
 </style>
 </head>
 <body>
 
 <div class="toast" id="toast"></div>
 
+<!-- NAMES SETUP / SETTINGS MODAL -->
+<div class="modal-overlay" id="names-modal">
+  <div class="modal">
+    <h2>SPRITE TRACKER</h2>
+    <p id="modal-subtitle">Set up your player names to get started.</p>
+    <div class="modal-label">Your Name</div>
+    <input class="modal-input" id="input-p1" type="text" placeholder="e.g. Alex" maxlength="20">
+    <div class="modal-label">Partner's Name <span style="color:var(--dim);font-weight:400;text-transform:none">(optional)</span></div>
+    <input class="modal-input" id="input-p2" type="text" placeholder="Leave blank for solo" maxlength="20">
+    <button class="modal-save" onclick="saveNames()">Let's Go</button>
+  </div>
+</div>
+
 <div class="top-bar" id="top-bar">
   <header>
     <h1>SPRITE <span>TRACKER</span></h1>
     <div class="hstats">
       <div class="hstat t" id="hs-total">0 owned</div>
-      <div class="hstat d" id="hs-david">D: 0</div>
-      <div class="hstat e" id="hs-emily">E: 0</div>
-      <button class="share-btn" onclick="shareLink()">📤 Share</button>
+      <div class="hstat p1" id="hs-p1" style="display:none"></div>
+      <div class="hstat p2" id="hs-p2" style="display:none"></div>
+      <button class="share-btn" onclick="shareLink()">Share</button>
+      <button class="gear-btn" onclick="openSettings()" title="Settings">⚙</button>
     </div>
   </header>
   <div class="tabs">
-    <div class="tab active" id="tab-match" onclick="setTab('match')">⚡ Match View</div>
-    <div class="tab" id="tab-coll" onclick="setTab('coll')">📋 Collection</div>
+    <div class="tab active" id="tab-match" onclick="setTab('match')">Match View</div>
+    <div class="tab" id="tab-coll" onclick="setTab('coll')">Collection</div>
   </div>
 </div>
 
@@ -254,7 +278,6 @@ select.vlvl.mastered { border-color: #ffd060; color: #ffd060; }
   <div class="coll-grid" id="coll-grid"></div>
 </div>
 
-<!-- FLOATING ADD BUTTON -->
 <button class="fab" onclick="openSheet()" title="Quick-add a sprite">+</button>
 
 <!-- QUICK-ADD SHEET -->
@@ -270,10 +293,7 @@ select.vlvl.mastered { border-color: #ffd060; color: #ffd060; }
     <div class="pill-row" id="sp-variants" data-variant-section></div>
 
     <div class="sheet-label">Who got it?</div>
-    <div class="pill-row">
-      <div class="pill" id="pill-david" onclick="pickOwner('david')">David</div>
-      <div class="pill" id="pill-emily" onclick="pickOwner('emily')">Emily</div>
-    </div>
+    <div class="pill-row" id="owner-pills"></div>
 
     <div class="sheet-label">Level</div>
     <div class="pill-row" id="sp-levels"></div>
@@ -304,30 +324,58 @@ const SPRITES = [
 ];
 
 const VARIANTS = [
-  { id:'normal', label:'N',  full:'Normal', color:'#bbb',     cls:'vnorm',   bonus:'' },
-  { id:'gold',   label:'G',  full:'Gold',   color:'#ffd060',  cls:'vgold',   bonus:'+XP from elims' },
-  { id:'gummy',  label:'Gy', full:'Gummy',  color:'#ff88dd',  cls:'vgummy',  bonus:'+Sprite Dust' },
-  { id:'galaxy', label:'Ga', full:'Galaxy', color:'#88ddff',  cls:'vgalaxy', bonus:'+20% ammo' },
+  { id:'normal', label:'N',  full:'Normal', color:'#bbb',    cls:'vnorm',   bonus:'' },
+  { id:'gold',   label:'G',  full:'Gold',   color:'#ffd060', cls:'vgold',   bonus:'+XP from elims' },
+  { id:'gummy',  label:'Gy', full:'Gummy',  color:'#ff88dd', cls:'vgummy',  bonus:'+Sprite Dust' },
+  { id:'galaxy', label:'Ga', full:'Galaxy', color:'#88ddff', cls:'vgalaxy', bonus:'+20% ammo' },
 ];
 
 const RARITY_ORDER = { rare:0, epic:1, legendary:2, mythic:3 };
+const CAT_COLORS = { 'Shield/Support':'#4488ff', 'Damage':'#ff5500', 'Loot':'#44aa22', 'Mobility':'#00bbdd', 'Evasion':'#bb44ff', 'Combat':'#ff9900', 'Life Steal':'#ff4488', 'Utility':'#88ddff' };
 
-const CAT_COLORS = {
-  'Shield/Support':'#00aaff','Damage':'#ff5544','Mobility':'#44ff88',
-  'Loot':'#ffaa22','Evasion':'#aa88ff','Life Steal':'#ff6677',
-  'Combat':'#ff8844','Utility':'#aaaaff',
-};
-
-// State key: "${spriteId}-${variantId}" e.g. "water-gold"
-// ST.david["water-gold"] = { owned: bool, level: 1-5 }
-let ST = { david:{}, emily:{} };
+// State: ST.p1["water-gold"] = { owned: bool, level: 1-5 }
+let ST = { p1:{}, p2:{} };
+let NAMES = { p1: '', p2: '' };
 let mFilters = { owner: 'all', mastered: 'all', variant: 'all', rarity: 'all', view: 'owned' };
 let cF = 'all';
 
+// ── NAMES ────────────────────────────────────────────────────────────────────
+function loadNames() {
+  try { const n = localStorage.getItem('fnNames'); if (n) NAMES = JSON.parse(n); } catch(e) {}
+}
+function saveNames() {
+  const p1 = document.getElementById('input-p1').value.trim();
+  const p2 = document.getElementById('input-p2').value.trim();
+  if (!p1) { document.getElementById('input-p1').focus(); return; }
+  NAMES = { p1, p2 };
+  localStorage.setItem('fnNames', JSON.stringify(NAMES));
+  document.getElementById('names-modal').classList.remove('open');
+  applyNames();
+  renderMatch();
+  renderColl();
+  updateStats();
+  renderFilterBar();
+}
+function openSettings() {
+  document.getElementById('input-p1').value = NAMES.p1;
+  document.getElementById('input-p2').value = NAMES.p2;
+  document.getElementById('modal-subtitle').textContent = 'Update your player names.';
+  document.getElementById('names-modal').classList.add('open');
+}
+function applyNames() {
+  const hasp2 = !!NAMES.p2;
+  document.getElementById('hs-p1').style.display = NAMES.p1 ? '' : 'none';
+  document.getElementById('hs-p2').style.display = hasp2 ? '' : 'none';
+}
+function playerLabel(p) { return NAMES[p] || (p === 'p1' ? 'Player 1' : 'Player 2'); }
+function playerInitial(p) { return playerLabel(p)[0].toUpperCase(); }
+function hasTwoPlayers() { return !!NAMES.p2; }
+function activePlayers() { return hasTwoPlayers() ? ['p1','p2'] : ['p1']; }
+
 // ── STATE HELPERS ─────────────────────────────────────────────────────────────
 function key(sid, vid) { return sid + '-' + vid; }
-function owned(sid, vid, owner) { return ST[owner][key(sid,vid)]?.owned || false; }
-function getLevel(sid, vid, owner) { return ST[owner][key(sid,vid)]?.level || 1; }
+function owned(sid, vid, owner) { return ST[owner]?.[key(sid,vid)]?.owned || false; }
+function getLevel(sid, vid, owner) { return ST[owner]?.[key(sid,vid)]?.level || 1; }
 
 function toggle(sid, vid, owner) {
   const k = key(sid, vid);
@@ -342,13 +390,13 @@ function setLevel(sid, vid, owner, val) {
   save();
 }
 
-// Which owners have ANY variant of this sprite?
 function spriteOwnership(sid) {
-  const d = VARIANTS.some(v => owned(sid, v.id, 'david'));
-  const e = VARIANTS.some(v => owned(sid, v.id, 'emily'));
-  if (d && e) return 'both';
-  if (d) return 'david';
-  if (e) return 'emily';
+  const players = activePlayers();
+  const p1has = players.includes('p1') && VARIANTS.some(v => owned(sid, v.id, 'p1'));
+  const p2has = players.includes('p2') && VARIANTS.some(v => owned(sid, v.id, 'p2'));
+  if (p1has && p2has) return 'both';
+  if (p1has) return 'p1';
+  if (p2has) return 'p2';
   return 'none';
 }
 
@@ -356,18 +404,20 @@ function save() { localStorage.setItem('fnST3', JSON.stringify(ST)); updateStats
 function load() { try { const s = localStorage.getItem('fnST3'); if(s) ST = JSON.parse(s); } catch(e){} }
 
 function updateStats() {
-  let d=0, e=0, total=0;
+  let p1=0, p2=0, total=0;
   const seenTotal = new Set();
   SPRITES.forEach(s => {
     VARIANTS.forEach(v => {
-      if (owned(s.id, v.id, 'david')) { d++; seenTotal.add(key(s.id,v.id)); }
-      if (owned(s.id, v.id, 'emily')) { e++; seenTotal.add(key(s.id,v.id)); }
+      if (owned(s.id, v.id, 'p1')) { p1++; seenTotal.add(key(s.id,v.id)); }
+      if (owned(s.id, v.id, 'p2')) { p2++; seenTotal.add(key(s.id,v.id)); }
     });
   });
   total = seenTotal.size;
   document.getElementById('hs-total').textContent = total + ' owned';
-  document.getElementById('hs-david').textContent = 'D: ' + d;
-  document.getElementById('hs-emily').textContent = 'E: ' + e;
+  const elP1 = document.getElementById('hs-p1');
+  const elP2 = document.getElementById('hs-p2');
+  elP1.textContent = playerInitial('p1') + ': ' + p1;
+  elP2.textContent = playerInitial('p2') + ': ' + p2;
 }
 
 // ── TABS / FILTERS ────────────────────────────────────────────────────────────
@@ -378,65 +428,69 @@ function setTab(t) {
   document.getElementById('tab-coll').className  = 'tab'+(t==='coll'?' active':'');
   if (t === 'match') renderFilterBar();
 }
-const FILTER_DEFS = {
-  owner:    { label:'Owner',   options:[
-    { value:'all',        label:'All Owned' },
-    { value:'david',      label:'David',      color:'#88aaff' },
-    { value:'emily',      label:'Emily',      color:'#ff88cc' },
-  ]},
-  mastered: { label:'Status',  options:[
-    { value:'all',        label:'All' },
-    { value:'mastered',   label:'★ Mastered', color:'#ffd060' },
-    { value:'unmastered', label:'Unmastered' },
-  ]},
-  variant:  { label:'Variant', options:[
-    { value:'all',    label:'All' },
-    { value:'normal', label:'Normal' },
-    { value:'gold',   label:'Gold',   color:'#ffd060' },
-    { value:'gummy',  label:'Gummy',  color:'#ff88dd' },
-    { value:'galaxy', label:'Galaxy', color:'#88ddff' },
-  ]},
-  rarity:   { label:'Rarity',  options:[
-    { value:'all',       label:'All' },
-    { value:'rare',      label:'Rare',      color:'#0088ff' },
-    { value:'epic',      label:'Epic',      color:'#bb44ff' },
-    { value:'legendary', label:'Legendary', color:'#ff9900' },
-    { value:'mythic',    label:'Mythic',    color:'#00ffcc' },
-  ]},
-  view:     { label:'Show',   options:[
-    { value:'owned',   label:'Owned' },
-    { value:'missing', label:'Missing', color:'#ff6666' },
-  ]},
-};
+
+function getFilterDefs() {
+  const ownerOpts = [{ value:'all', label:'All Owned' }];
+  ownerOpts.push({ value:'p1', label: playerLabel('p1'), color:'#88aaff' });
+  if (hasTwoPlayers()) ownerOpts.push({ value:'p2', label: playerLabel('p2'), color:'#ff88cc' });
+  return {
+    owner:    { label:'Owner',   options: ownerOpts },
+    mastered: { label:'Status',  options:[
+      { value:'all',        label:'All' },
+      { value:'mastered',   label:'Mastered', color:'#ffd060' },
+      { value:'unmastered', label:'Unmastered' },
+    ]},
+    variant:  { label:'Variant', options:[
+      { value:'all',    label:'All' },
+      { value:'normal', label:'Normal' },
+      { value:'gold',   label:'Gold',   color:'#ffd060' },
+      { value:'gummy',  label:'Gummy',  color:'#ff88dd' },
+      { value:'galaxy', label:'Galaxy', color:'#88ddff' },
+    ]},
+    rarity:   { label:'Rarity',  options:[
+      { value:'all',       label:'All' },
+      { value:'rare',      label:'Rare',      color:'#0088ff' },
+      { value:'epic',      label:'Epic',      color:'#bb44ff' },
+      { value:'legendary', label:'Legendary', color:'#ff9900' },
+      { value:'mythic',    label:'Mythic',    color:'#00ffcc' },
+    ]},
+    view:     { label:'Show',   options:[
+      { value:'owned',   label:'Owned' },
+      { value:'missing', label:'Missing', color:'#ff6666' },
+    ]},
+  };
+}
 
 function renderFilterBar() {
+  const FILTER_DEFS = getFilterDefs();
   const bar = document.getElementById('match-filter-bar');
-  bar.innerHTML = Object.entries(FILTER_DEFS).map(([key, def]) => {
-    const cur = mFilters[key];
+  bar.innerHTML = Object.entries(FILTER_DEFS).map(([k, def]) => {
+    const cur = mFilters[k];
     const curOpt = def.options.find(o => o.value === cur) || def.options[0];
-    const isFiltered = cur !== 'all';
-    const label = isFiltered ? curOpt.label : def.label;
+    const isFiltered = cur !== 'all' && cur !== 'owned';
+    const label = (cur !== 'all' && cur !== 'owned') ? curOpt.label : def.label;
     const color = isFiltered && curOpt.color ? `color:${curOpt.color}` : '';
     const items = def.options.map(o => `
       <div class="dd-item${cur===o.value?' active':''}" style="${o.color?'color:'+o.color:''}"
-           onclick="applyFilter('${key}','${o.value}')">${o.label}</div>`).join('');
+           onclick="applyFilter('${k}','${o.value}')">${o.label}</div>`).join('');
     return `
-      <div class="dd" id="dd-${key}">
-        <button class="dd-btn${isFiltered?' on':''}" style="${color}" onclick="toggleDD('${key}',event)">
+      <div class="dd" id="dd-${k}">
+        <button class="dd-btn${isFiltered?' on':''}" style="${color}" onclick="toggleDD('${k}',event)">
           ${label} <span class="dd-chevron">▾</span>
         </button>
-        <div class="dd-menu" id="dd-menu-${key}">${items}</div>
+        <div class="dd-menu" id="dd-menu-${k}">${items}</div>
       </div>`;
   }).join('');
 
+  const FILTER_DEFS2 = getFilterDefs();
   const af = document.getElementById('active-filters');
-  const active = Object.entries(FILTER_DEFS)
-    .filter(([key]) => mFilters[key] !== 'all')
-    .map(([key, def]) => {
-      const opt = def.options.find(o => o.value === mFilters[key]);
+  const active = Object.entries(FILTER_DEFS2)
+    .filter(([k]) => mFilters[k] !== 'all' && mFilters[k] !== 'owned')
+    .map(([k, def]) => {
+      const opt = def.options.find(o => o.value === mFilters[k]);
       const col = opt?.color || '#aaa';
       return `<span class="af-chip" style="color:${col};border-color:${col}33;background:${col}18"
-        onclick="applyFilter('${key}','all')">${def.label}: ${opt?.label}<span class="af-x">✕</span></span>`;
+        onclick="applyFilter('${k}','all')">${def.label}: ${opt?.label}<span class="af-x">✕</span></span>`;
     });
   af.innerHTML = active.length
     ? active.join('')
@@ -445,16 +499,16 @@ function renderFilterBar() {
   pinFilters();
 }
 
-function toggleDD(key, e) {
+function toggleDD(k, e) {
   e.stopPropagation();
-  const menu = document.getElementById('dd-menu-' + key);
+  const menu = document.getElementById('dd-menu-' + k);
   const wasOpen = menu.classList.contains('open');
   document.querySelectorAll('.dd-menu').forEach(m => m.classList.remove('open'));
   if (!wasOpen) menu.classList.add('open');
 }
 
-function applyFilter(key, value) {
-  mFilters[key] = value;
+function applyFilter(k, value) {
+  mFilters[k] = value;
   document.querySelectorAll('.dd-menu').forEach(m => m.classList.remove('open'));
   renderFilterBar();
   renderMatch();
@@ -463,6 +517,7 @@ function applyFilter(key, value) {
 document.addEventListener('click', () => {
   document.querySelectorAll('.dd-menu').forEach(m => m.classList.remove('open'));
 });
+
 function cFilter(f, btn) {
   cF = f;
   document.querySelectorAll('#view-coll .fbtn').forEach(b=>b.classList.remove('active'));
@@ -475,7 +530,8 @@ function renderMatch() {
   const el = document.getElementById('match-grid');
   const { owner: of_, mastered: mf, variant: vf, rarity: rf, view: vw } = mFilters;
 
-  const owners = of_ === 'all' ? ['david','emily'] : [of_];
+  const allOwners = activePlayers();
+  const owners = of_ === 'all' ? allOwners : (allOwners.includes(of_) ? [of_] : allOwners);
   const variantsInScope = vf === 'all' ? VARIANTS : VARIANTS.filter(v => v.id === vf);
 
   const variantOwned   = (s, v) => owners.some(o => owned(s.id, v.id, o));
@@ -509,11 +565,9 @@ function renderMatch() {
         chipContent = `<span class="chip chip-missing">Not owned</span>`;
       } else {
         chipContent = variantsInScope.map(v => {
-          if (variantMissing(s, v)) {
-            return `<span class="chip chip-missing">${v.full}</span>`;
-          }
+          if (variantMissing(s, v)) return `<span class="chip chip-missing">${v.full}</span>`;
           const isMastered = owners.some(o => owned(s.id, v.id, o) && getLevel(s.id, v.id, o) === 5);
-          return `<span class="chip ${v.cls}${isMastered ? ' chip-mastered' : ''}">${v.full}${isMastered ? ' ★' : ''}</span>`;
+          return `<span class="chip ${v.cls}${isMastered?' chip-mastered':''}">${v.full}${isMastered?' ★':''}</span>`;
         }).join('');
       }
     } else {
@@ -521,7 +575,7 @@ function renderMatch() {
         .filter(v => variantOwned(s, v))
         .map(v => {
           const isMastered = owners.some(o => owned(s.id, v.id, o) && getLevel(s.id, v.id, o) === 5);
-          return `<span class="chip ${v.cls}${isMastered ? ' chip-mastered' : ''}">${v.full}${isMastered ? ' ★' : ''}</span>`;
+          return `<span class="chip ${v.cls}${isMastered?' chip-mastered':''}">${v.full}${isMastered?' ★':''}</span>`;
         }).join('');
     }
 
@@ -539,6 +593,7 @@ function renderMatch() {
 
 // ── COLLECTION RENDER ─────────────────────────────────────────────────────────
 function renderColl() {
+  const players = activePlayers();
   const sorted = [...SPRITES]
     .filter(s => cF === 'all' || s.rarity === cF)
     .sort((a,b) => RARITY_ORDER[a.rarity] - RARITY_ORDER[b.rarity]);
@@ -547,58 +602,54 @@ function renderColl() {
   el.innerHTML = sorted.map(s => {
     const ow = spriteOwnership(s.id);
     let badge = '';
-    if (ow==='both')  badge = `<div class="obadge b">D+E</div>`;
-    else if (ow==='david') badge = `<div class="obadge d">D</div>`;
-    else if (ow==='emily') badge = `<div class="obadge e">E</div>`;
+    if (ow==='both')      badge = `<div class="obadge both">${playerInitial('p1')}+${playerInitial('p2')}</div>`;
+    else if (ow==='p1')   badge = `<div class="obadge p1">${playerInitial('p1')}</div>`;
+    else if (ow==='p2')   badge = `<div class="obadge p2">${playerInitial('p2')}</div>`;
 
     let ownerRows, vHeaders;
 
     if (s.noVariants) {
-      // Simple yes/no per owner — no variant grid
       vHeaders = '';
       ownerRows = `<div style="display:flex; gap:8px; padding:2px 0">` +
-        ['david','emily'].map(owner => {
-          const isOn = owned(s.id, 'normal', owner);
-          const lvl = getLevel(s.id, 'normal', owner);
+        players.map(player => {
+          const isOn = owned(s.id, 'normal', player);
+          const lvl = getLevel(s.id, 'normal', player);
           const mastered = isOn && lvl === 5;
-          const checkCls = isOn ? `on-${owner}${mastered ? ' mastered' : ''}` : '';
-          const lbl = owner === 'david' ? 'David' : 'Emily';
-          const lblCls = owner === 'david' ? 'd' : 'e';
+          const checkCls = isOn ? `on-${player}${mastered ? ' mastered' : ''}` : '';
+          const lbl = playerLabel(player);
           const lvlOpts = [1,2,3,4,5].map(n=>`<option value="${n}"${lvl===n?' selected':''}>${n===5?'5 ★':n}</option>`).join('');
           return `
             <div style="display:flex; align-items:center; gap:5px; flex:1">
-              <div class="vcheck ${checkCls}" style="cursor:pointer" onclick="toggle('${s.id}','normal','${owner}')">${mastered?'★':isOn?'✓':''}</div>
-              <span class="vrow-label ${lblCls}" style="font-size:11px">${lbl}</span>
-              ${isOn ? `<select class="vlvl${mastered?' mastered':''}" onchange="setLevel('${s.id}','normal','${owner}',this.value)" style="margin-left:auto">${lvlOpts}</select>` : ''}
+              <div class="vcheck ${checkCls}" style="cursor:pointer" onclick="toggle('${s.id}','normal','${player}')">${mastered?'★':isOn?'✓':''}</div>
+              <span class="vrow-label ${player}" style="font-size:11px">${lbl}</span>
+              ${isOn ? `<select class="vlvl${mastered?' mastered':''}" onchange="setLevel('${s.id}','normal','${player}',this.value)" style="margin-left:auto">${lvlOpts}</select>` : ''}
             </div>`;
         }).join('') +
       `</div>`;
     } else {
-      // Standard variant grid
       vHeaders = VARIANTS.map(v =>
         `<div class="vth" style="color:${v.color}">${v.label}</div>`
       ).join('');
 
-      ownerRows = ['david','emily'].map(owner => {
-        const lbl = owner === 'david' ? 'D' : 'E';
-        const lblCls = owner === 'david' ? 'd' : 'e';
+      ownerRows = players.map(player => {
+        const lbl = playerInitial(player);
         const cells = VARIANTS.map(v => {
-          const isOn = owned(s.id, v.id, owner);
-          const lvl = getLevel(s.id, v.id, owner);
+          const isOn = owned(s.id, v.id, player);
+          const lvl = getLevel(s.id, v.id, player);
           const mastered = isOn && lvl === 5;
-          const checkCls = isOn ? `on-${owner}${mastered ? ' mastered' : ''}` : '';
+          const checkCls = isOn ? `on-${player}${mastered ? ' mastered' : ''}` : '';
           const lvlOpts = [1,2,3,4,5].map(n=>`<option value="${n}"${lvl===n?' selected':''}>${n===5?'5 ★':n}</option>`).join('');
           return `
-            <div class="vcell" onclick="toggle('${s.id}','${v.id}','${owner}')">
+            <div class="vcell" onclick="toggle('${s.id}','${v.id}','${player}')">
               <div class="vcheck ${checkCls}">${mastered ? '★' : isOn ? '✓' : ''}</div>
-              ${isOn ? `<select class="vlvl${mastered?' mastered':''}" onclick="event.stopPropagation()" onchange="setLevel('${s.id}','${v.id}','${owner}',this.value)">
+              ${isOn ? `<select class="vlvl${mastered?' mastered':''}" onclick="event.stopPropagation()" onchange="setLevel('${s.id}','${v.id}','${player}',this.value)">
                 ${lvlOpts}
               </select>` : ''}
             </div>`;
         }).join('');
         return `
           <div class="vtable-row">
-            <div class="vrow-label ${lblCls}">${lbl}</div>
+            <div class="vrow-label ${player}">${lbl}</div>
             ${cells}
           </div>`;
       }).join('');
@@ -628,7 +679,7 @@ function shareLink() {
   const encoded = btoa(JSON.stringify(ST));
   const url = location.href.split('#')[0] + '#' + encoded;
   if (navigator.clipboard) {
-    navigator.clipboard.writeText(url).then(() => showToast('Link copied! Open it on your phone.'));
+    navigator.clipboard.writeText(url).then(() => showToast('Link copied!'));
   } else {
     prompt('Copy this link:', url);
   }
@@ -638,7 +689,7 @@ function loadFromUrl() {
   if (!hash) return false;
   try {
     const data = JSON.parse(atob(hash));
-    if (data.david && data.emily) {
+    if (data.p1 && data.p2) {
       ST = data;
       save();
       history.replaceState(null, '', location.pathname);
@@ -654,10 +705,6 @@ function showToast(msg) {
   setTimeout(() => el.classList.remove('show'), 2800);
 }
 
-// ── SEED DATA ─────────────────────────────────────────────────────────────────
-function seedIfEmpty() {}
-function migrateEmilyV2() {}
-
 // ── QUICK ADD ─────────────────────────────────────────────────────────────────
 let qa = { sprite: null, variant: 'normal', owner: null, level: 1 };
 
@@ -666,15 +713,10 @@ function openSheet() {
   renderSheet();
   document.getElementById('sheet-overlay').classList.add('open');
 }
-function closeSheet() {
-  document.getElementById('sheet-overlay').classList.remove('open');
-}
-function maybeCloseSheet(e) {
-  if (e.target === document.getElementById('sheet-overlay')) closeSheet();
-}
+function closeSheet() { document.getElementById('sheet-overlay').classList.remove('open'); }
+function maybeCloseSheet(e) { if (e.target === document.getElementById('sheet-overlay')) closeSheet(); }
 
 function renderSheet() {
-  // Sprite picker
   document.getElementById('sp-picker').innerHTML = SPRITES.map(s => `
     <div class="sp-btn${qa.sprite===s.id?' sel':''}" onclick="pickSprite('${s.id}')"
          style="${qa.sprite===s.id?'border-color:'+s.rc+';background:'+s.rc+'22':''}">
@@ -682,14 +724,10 @@ function renderSheet() {
       <div class="sp-name" style="${qa.sprite===s.id?'color:'+s.rc:''}">${s.name.replace(' Sprite','')}</div>
     </div>`).join('');
 
-  // Variant pills — hidden for no-variant sprites
   const selectedSprite = SPRITES.find(s => s.id === qa.sprite);
-  const variantSection = document.getElementById('sp-variants').closest('div') ||
-    document.getElementById('sp-variants').parentElement;
-  const variantLabel = document.getElementById('sp-variants').previousElementSibling;
   const noVar = selectedSprite?.noVariants;
-  if (noVar) { qa.variant = 'normal'; }
-  document.getElementById('sp-variants').closest('.sheet').querySelectorAll('[data-variant-section]').forEach(el => {
+  if (noVar) qa.variant = 'normal';
+  document.getElementById('sheet').querySelectorAll('[data-variant-section]').forEach(el => {
     el.style.display = noVar ? 'none' : '';
   });
   document.getElementById('sp-variants').innerHTML = noVar ? '' : VARIANTS.map(v => `
@@ -697,23 +735,20 @@ function renderSheet() {
          style="${qa.variant===v.id?'border-color:'+v.color+';color:'+v.color+';background:'+v.color+'18':''}"
          onclick="pickVariant('${v.id}')">${v.full}</div>`).join('');
 
-  // Owner pills
-  document.getElementById('pill-david').className = 'pill' + (qa.owner==='david'?' sel-d':'');
-  document.getElementById('pill-emily').className = 'pill' + (qa.owner==='emily'?' sel-e':'');
+  document.getElementById('owner-pills').innerHTML = activePlayers().map(p => `
+    <div class="pill${qa.owner===p?' sel-'+p:''}" onclick="pickOwner('${p}')">${playerLabel(p)}</div>`
+  ).join('');
 
-  // Level pills
   document.getElementById('sp-levels').innerHTML = [1,2,3,4,5].map(n => `
-    <div class="pill${qa.level===n?' sel-l':''}" onclick="pickLevel(${n})"
-         style="${n===5?'position:relative':''}">${n===5?'5 ★':n}</div>`).join('');
+    <div class="pill${qa.level===n?' sel-l':''}" onclick="pickLevel(${n})">${n===5?'5 ★':n}</div>`).join('');
 
-  // Add button state
   document.getElementById('add-btn').disabled = !qa.sprite || !qa.owner;
 }
 
-function pickSprite(id)   { qa.sprite  = id;      renderSheet(); }
-function pickVariant(id)  { qa.variant = id;      renderSheet(); }
-function pickOwner(o)     { qa.owner   = o;       renderSheet(); }
-function pickLevel(n)     { qa.level   = n;       renderSheet(); }
+function pickSprite(id)  { qa.sprite  = id; renderSheet(); }
+function pickVariant(id) { qa.variant = id; renderSheet(); }
+function pickOwner(o)    { qa.owner   = o;  renderSheet(); }
+function pickLevel(n)    { qa.level   = n;  renderSheet(); }
 
 function quickAdd() {
   if (!qa.sprite || !qa.owner) return;
@@ -721,13 +756,10 @@ function quickAdd() {
   if (!ST[qa.owner][k]) ST[qa.owner][k] = { owned: false, level: 1 };
   ST[qa.owner][k].owned = true;
   ST[qa.owner][k].level = qa.level;
-  save();
-  renderMatch();
-  renderColl();
-  closeSheet();
+  save(); renderMatch(); renderColl(); closeSheet();
   const s = SPRITES.find(x => x.id === qa.sprite);
   const v = VARIANTS.find(x => x.id === qa.variant);
-  showToast(`Added ${s.name} (${v.full}) for ${qa.owner === 'david' ? 'David' : 'Emily'}`);
+  showToast(`Added ${s.name} (${v.full}) for ${playerLabel(qa.owner)}`);
 }
 
 // ── STICKY FILTER POSITIONING ─────────────────────────────────────────────────
@@ -739,13 +771,19 @@ function pinFilters() {
 }
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
+loadNames();
 load();
-if (!loadFromUrl()) { seedIfEmpty(); migrateEmilyV2(); }
-renderFilterBar();
-renderMatch();
-renderColl();
-updateStats();
-pinFilters();
+loadFromUrl();
+applyNames();
+if (!NAMES.p1) {
+  document.getElementById('names-modal').classList.add('open');
+} else {
+  renderFilterBar();
+  renderMatch();
+  renderColl();
+  updateStats();
+  pinFilters();
+}
 window.addEventListener('resize', pinFilters);
 </script>
 </body>
