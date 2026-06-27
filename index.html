@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Sprite Tracker</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #08080f;
+  --surface: #111122;
+  --surface2: #181830;
+  --border: #252545;
+  --text: #e0e0ff;
+  --dim: #7070a0;
+  --accent: #4488ff;
+  --david: #4488ff;
+  --emily: #ff44aa;
+  --both: #44cc88;
+}
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+/* TOP BAR — header + tabs pinned together */
+.top-bar { position: sticky; top: 0; z-index: 200; }
+
+/* HEADER */
+header {
+  background: linear-gradient(135deg, #12082a 0%, #081228 100%);
+  border-bottom: 2px solid #3355cc;
+  padding: 10px 12px;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 8px;
+}
+header h1 { font-size: 17px; font-weight: 900; letter-spacing: 2px; color: #fff; text-shadow: 0 0 12px #4466ff88; white-space: nowrap; }
+header h1 span { color: #66aaff; }
+.hstats { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; align-items: center; }
+.hstat { font-size: 11px; font-weight: 700; padding: 3px 7px; border-radius: 12px; white-space: nowrap; }
+.hstat.t { background: rgba(68,204,136,0.15); color: #88ffbb; border: 1px solid rgba(68,204,136,0.25); }
+.hstat.d { background: rgba(68,136,255,0.15); color: #88aaff; border: 1px solid rgba(68,136,255,0.25); }
+.hstat.e { background: rgba(255,68,170,0.15); color: #ff88cc; border: 1px solid rgba(255,68,170,0.25); }
+.share-btn { background: rgba(68,136,255,0.15); border: 1px solid rgba(68,136,255,0.35); color: #88aaff; border-radius: 12px; padding: 4px 9px; font-size: 11px; font-weight: 700; cursor: pointer; white-space: nowrap; }
+.share-btn:active { background: rgba(68,136,255,0.3); }
+.toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #22cc66; color: #fff; font-weight: 700; font-size: 13px; padding: 10px 20px; border-radius: 20px; z-index: 9999; pointer-events: none; opacity: 0; transition: opacity 0.2s; white-space: nowrap; }
+.toast.show { opacity: 1; }
+
+/* TABS */
+.tabs { display: flex; background: var(--surface); border-bottom: 1px solid var(--border); }
+.tab { flex: 1; padding: 10px 6px; text-align: center; cursor: pointer; font-weight: 700; font-size: 12px; color: var(--dim); border-bottom: 3px solid transparent; letter-spacing: 0.5px; text-transform: uppercase; transition: all 0.15s; user-select: none; }
+.tab.active { color: #fff; border-bottom-color: var(--accent); background: rgba(68,136,255,0.07); }
+
+/* FILTER BAR */
+.filter-bar { display: flex; gap: 6px; padding: 8px 10px; background: var(--surface2); border-bottom: 1px solid var(--border); overflow-x: auto; scrollbar-width: none; position: sticky; z-index: 99; }
+.filter-bar::-webkit-scrollbar { display: none; }
+.fbtn { padding: 5px 11px; border-radius: 20px; border: 1px solid var(--border); background: transparent; color: var(--dim); cursor: pointer; white-space: nowrap; font-size: 11px; font-weight: 700; transition: all 0.15s; user-select: none; }
+.fbtn.active { background: var(--accent); border-color: var(--accent); color: #fff !important; }
+
+/* DROPDOWN FILTER BAR */
+.dd-bar { display: flex; gap: 6px; padding: 8px 10px; background: var(--surface2); border-bottom: 1px solid var(--border); position: sticky; z-index: 99; }
+.dd { flex: 1; position: relative; }
+.dd-btn { width: 100%; padding: 7px 6px; background: var(--surface); border: 1px solid var(--border); color: var(--dim); border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 3px; white-space: nowrap; -webkit-tap-highlight-color: transparent; }
+.dd-btn.on { border-color: var(--accent); background: rgba(68,136,255,0.12); color: #fff; }
+.dd-chevron { font-size: 8px; opacity: 0.6; }
+.dd-menu { display: none; position: absolute; top: calc(100% + 4px); left: 0; min-width: 130px; background: #1c1c34; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; z-index: 500; box-shadow: 0 6px 20px rgba(0,0,0,0.5); }
+.dd-menu.open { display: block; }
+.dd-item { padding: 10px 14px; font-size: 12px; font-weight: 600; color: var(--text); cursor: pointer; border-bottom: 1px solid var(--border); -webkit-tap-highlight-color: transparent; }
+.dd-item:last-child { border-bottom: none; }
+.dd-item.active { background: rgba(68,136,255,0.15); }
+.dd-item:active { background: rgba(255,255,255,0.08); }
+.active-filters { display: flex; flex-wrap: wrap; gap: 5px; padding: 6px 10px; background: var(--bg); border-bottom: 1px solid var(--border); min-height: 32px; align-items: center; }
+.af-chip { display: inline-flex; align-items: center; gap: 4px; padding: 3px 9px; border-radius: 20px; font-size: 11px; font-weight: 700; border: 1px solid; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.af-chip .af-x { font-size: 10px; opacity: 0.7; margin-left: 2px; }
+.af-none { font-size: 11px; color: var(--dim); opacity: 0.5; font-style: italic; }
+
+/* ── MATCH VIEW ── */
+.match-grid { padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+.match-card { background: var(--surface); border-radius: 10px; border-left: 4px solid; padding: 11px 12px; display: flex; gap: 11px; align-items: flex-start; }
+.micon { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 23px; flex-shrink: 0; border: 2px solid transparent; }
+.minfo { flex: 1; min-width: 0; }
+.mname { font-weight: 800; font-size: 14px; margin-bottom: 3px; }
+.mability { font-size: 12px; color: #b0b0cc; line-height: 1.45; margin-bottom: 7px; }
+.chip { font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 10px; background: rgba(255,255,255,0.07); color: var(--dim); }
+.chip.chip-mastered { outline: 1px solid rgba(255,208,96,0.5); }
+.chip.chip-missing { background: rgba(255,80,80,0.12); color: #ff7777; outline: 1px dashed rgba(255,80,80,0.4); }
+.chip.vnorm   { background: rgba(160,160,160,0.15); color: #ccc; }
+.chip.vgold   { background: rgba(255,200,0,0.18);   color: #ffd060; }
+.chip.vgummy  { background: rgba(255,80,200,0.18);  color: #ff88dd; }
+.chip.vgalaxy { background: rgba(80,180,255,0.18);  color: #88ddff; }
+.chip.max     { background: rgba(255,208,0,0.2); color: #ffd060; font-weight: 900; }
+.mfoot { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 6px; }
+.mchips { display: flex; gap: 5px; flex-wrap: wrap; }
+.mowner-badges { display: flex; gap: 4px; flex-shrink: 0; }
+.own-badge { font-size: 10px; font-weight: 900; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+.ob-d { background: var(--david); color: #fff; }
+.ob-e { background: var(--emily); color: #fff; }
+
+/* ── COLLECTION VIEW ── */
+.coll-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 8px; padding: 10px; }
+@media (max-width: 360px) { .coll-grid { grid-template-columns: repeat(2, 1fr); } }
+
+.ccard { background: var(--surface); border-radius: 10px; border: 1px solid var(--border); overflow: hidden; position: relative; }
+.ctop { padding: 11px 10px 8px; display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; }
+.cicon { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 25px; border: 2px solid; }
+.rbadge { font-size: 9px; font-weight: 900; letter-spacing: 1px; padding: 2px 7px; border-radius: 10px; background: rgba(0,0,0,0.5); }
+.cname { font-weight: 800; font-size: 12px; line-height: 1.25; }
+.cability { font-size: 10px; color: var(--dim); line-height: 1.4; }
+.catline { font-size: 10px; }
+
+.cdivider { height: 1px; background: var(--border); }
+
+/* VARIANT GRID inside card */
+.variant-table { padding: 7px 8px 8px; width: 100%; }
+.vtable-head { display: grid; grid-template-columns: 36px repeat(4, 1fr); gap: 3px; margin-bottom: 4px; }
+.vth { font-size: 8px; font-weight: 900; letter-spacing: 0.5px; text-align: center; }
+.vtable-row { display: grid; grid-template-columns: 36px repeat(4, 1fr); gap: 3px; margin-bottom: 6px; }
+.vrow-label { font-size: 10px; font-weight: 800; display: flex; align-items: flex-start; padding-top: 3px; }
+.vrow-label.d { color: #88aaff; }
+.vrow-label.e { color: #ff88cc; }
+.vcell { display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.vcheck { width: 22px; height: 22px; border-radius: 5px; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 12px; transition: all 0.12s; }
+.vcheck.on-david { background: var(--david); border-color: var(--david); color: #fff; }
+.vcheck.on-emily { background: var(--emily); border-color: var(--emily); color: #fff; }
+.vcheck.mastered { box-shadow: 0 0 6px #ffd06099; }
+select.vlvl { background: var(--surface2); border: 1px solid var(--border); color: var(--text); border-radius: 4px; padding: 1px 1px; font-size: 9px; cursor: pointer; width: 100%; text-align: center; }
+select.vlvl.mastered { border-color: #ffd060; color: #ffd060; }
+.chip.max { background: rgba(255,208,0,0.2); color: #ffd060; font-weight: 900; letter-spacing: 0.5px; }
+
+/* Owned badge top-right of card */
+.obadge { position: absolute; top: 5px; right: 5px; min-width: 16px; height: 16px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 8px; font-weight: 900; padding: 0 3px; }
+.obadge.d { background: var(--david); color: #fff; }
+.obadge.e { background: var(--emily); color: #fff; }
+.obadge.b { background: var(--both); color: #fff; }
+
+/* FLOATING ADD BUTTON */
+.fab {
+  position: fixed; bottom: 22px; right: 18px;
+  width: 52px; height: 52px; border-radius: 50%;
+  background: linear-gradient(135deg, #4488ff, #6644ff);
+  color: #fff; font-size: 26px; font-weight: 300;
+  border: none; cursor: pointer; z-index: 300;
+  box-shadow: 0 4px 16px rgba(68,136,255,0.5);
+  display: flex; align-items: center; justify-content: center;
+  transition: transform 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.fab:active { transform: scale(0.92); }
+
+/* QUICK-ADD SHEET */
+.sheet-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+  z-index: 400; display: none; align-items: flex-end;
+}
+.sheet-overlay.open { display: flex; }
+.sheet {
+  background: #161628; border-radius: 18px 18px 0 0;
+  border-top: 1px solid var(--border);
+  width: 100%; padding: 16px 16px 32px;
+  max-height: 90vh; overflow-y: auto;
+}
+.sheet-handle { width: 36px; height: 4px; background: var(--border); border-radius: 2px; margin: 0 auto 14px; }
+.sheet-title { font-size: 15px; font-weight: 900; letter-spacing: 1px; text-align: center; margin-bottom: 14px; color: #fff; }
+.sheet-label { font-size: 10px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--dim); margin-bottom: 6px; }
+
+/* sprite picker */
+.sprite-picker { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 14px; }
+.sp-btn {
+  background: var(--surface2); border: 2px solid var(--border);
+  border-radius: 10px; padding: 7px 4px; cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  -webkit-tap-highlight-color: transparent; transition: all 0.12s;
+}
+.sp-btn.sel { border-color: var(--accent); background: rgba(68,136,255,0.12); }
+.sp-img { width: 36px; height: 36px; object-fit: contain; }
+.sp-name { font-size: 8px; font-weight: 700; text-align: center; color: var(--dim); line-height: 1.2; }
+.sp-btn.sel .sp-name { color: #88aaff; }
+
+/* variant / owner / level pickers */
+.pill-row { display: flex; gap: 7px; margin-bottom: 14px; flex-wrap: wrap; }
+.pill {
+  flex: 1; min-width: 52px; padding: 8px 6px; border-radius: 10px;
+  border: 2px solid var(--border); background: var(--surface2);
+  font-size: 11px; font-weight: 800; text-align: center; cursor: pointer;
+  -webkit-tap-highlight-color: transparent; transition: all 0.12s;
+}
+.pill.sel-v  { border-color: #ffd060; background: rgba(255,208,0,0.1); color: #ffd060; }
+.pill.sel-d  { border-color: var(--david); background: rgba(68,136,255,0.12); color: #88aaff; }
+.pill.sel-e  { border-color: var(--emily); background: rgba(255,68,170,0.12); color: #ff88cc; }
+.pill.sel-l  { border-color: var(--both); background: rgba(68,204,136,0.12); color: #88ffbb; }
+
+.add-btn {
+  width: 100%; padding: 13px; border-radius: 12px;
+  background: linear-gradient(135deg, #4488ff, #6644ff);
+  color: #fff; font-size: 14px; font-weight: 900; letter-spacing: 1px;
+  border: none; cursor: pointer; margin-top: 4px;
+  -webkit-tap-highlight-color: transparent;
+}
+.add-btn:active { opacity: 0.85; }
+.add-btn:disabled { opacity: 0.35; cursor: default; }
+
+/* EMPTY */
+.empty { text-align: center; padding: 50px 20px; color: var(--dim); }
+.empty h3 { font-size: 16px; margin-bottom: 8px; color: var(--text); }
+.empty p { font-size: 12px; line-height: 1.6; max-width: 280px; margin: 0 auto; }
+
+/* LEGEND */
+.legend { margin: 8px 10px 2px; padding: 9px 11px; background: var(--surface); border-radius: 8px; border: 1px solid var(--border); }
+.legend-title { font-size: 10px; font-weight: 900; letter-spacing: 1px; color: var(--dim); text-transform: uppercase; margin-bottom: 5px; }
+.legend-row { font-size: 11px; color: #c0c0dd; margin-bottom: 2px; }
+.legend-row span { font-weight: 700; }
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast"></div>
+
+<div class="top-bar" id="top-bar">
+  <header>
+    <h1>SPRITE <span>TRACKER</span></h1>
+    <div class="hstats">
+      <div class="hstat t" id="hs-total">0 owned</div>
+      <div class="hstat d" id="hs-david">D: 0</div>
+      <div class="hstat e" id="hs-emily">E: 0</div>
+      <button class="share-btn" onclick="shareLink()">📤 Share</button>
+    </div>
+  </header>
+  <div class="tabs">
+    <div class="tab active" id="tab-match" onclick="setTab('match')">⚡ Match View</div>
+    <div class="tab" id="tab-coll" onclick="setTab('coll')">📋 Collection</div>
+  </div>
+</div>
+
+<!-- MATCH VIEW -->
+<div id="view-match">
+  <div class="dd-bar" id="match-filter-bar"></div>
+  <div class="active-filters" id="active-filters"></div>
+  <div class="match-grid" id="match-grid"></div>
+</div>
+
+<!-- COLLECTION VIEW -->
+<div id="view-coll" style="display:none">
+  <div class="filter-bar">
+    <button class="fbtn active" onclick="cFilter('all',this)">All</button>
+    <button class="fbtn" onclick="cFilter('rare',this)">Rare</button>
+    <button class="fbtn" onclick="cFilter('epic',this)">Epic</button>
+    <button class="fbtn" onclick="cFilter('legendary',this)">Legendary</button>
+    <button class="fbtn" onclick="cFilter('mythic',this)">Mythic</button>
+  </div>
+  <div class="legend">
+    <div class="legend-title">Variant Bonuses</div>
+    <div class="legend-row"><span style="color:#bbb">N</span> Normal — base ability only</div>
+    <div class="legend-row"><span style="color:#ffd060">G</span> Gold — +bonus XP from eliminations</div>
+    <div class="legend-row"><span style="color:#ff88dd">Gy</span> Gummy — +extra Sprite Dust when extracted</div>
+    <div class="legend-row"><span style="color:#88ddff">Ga</span> Galaxy — +20% more ammo from ammo boxes</div>
+  </div>
+  <div class="coll-grid" id="coll-grid"></div>
+</div>
+
+<!-- FLOATING ADD BUTTON -->
+<button class="fab" onclick="openSheet()" title="Quick-add a sprite">+</button>
+
+<!-- QUICK-ADD SHEET -->
+<div class="sheet-overlay" id="sheet-overlay" onclick="maybeCloseSheet(event)">
+  <div class="sheet" id="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title">QUICK ADD SPRITE</div>
+
+    <div class="sheet-label">Sprite</div>
+    <div class="sprite-picker" id="sp-picker"></div>
+
+    <div class="sheet-label" data-variant-section>Variant</div>
+    <div class="pill-row" id="sp-variants" data-variant-section></div>
+
+    <div class="sheet-label">Who got it?</div>
+    <div class="pill-row">
+      <div class="pill" id="pill-david" onclick="pickOwner('david')">David</div>
+      <div class="pill" id="pill-emily" onclick="pickOwner('emily')">Emily</div>
+    </div>
+
+    <div class="sheet-label">Level</div>
+    <div class="pill-row" id="sp-levels"></div>
+
+    <button class="add-btn" id="add-btn" onclick="quickAdd()">ADD TO COLLECTION</button>
+  </div>
+</div>
+
+<script>
+// ── DATA ─────────────────────────────────────────────────────────────────────
+const SPRITES = [
+  { id:'water',   name:'Water Sprite',        rarity:'rare',      rc:'#0088ff', cat:'Shield/Support', img:'sprites/water.webp',   ability:'Replenishes shields for you and nearby squadmates while standing in water.' },
+  { id:'fire',    name:'Fire Sprite',          rarity:'rare',      rc:'#ff5500', cat:'Damage',          img:'sprites/fire.webp',    ability:'Creates a fiery burst when you deal enough damage to an enemy.' },
+  { id:'earth',   name:'Earth Sprite',         rarity:'rare',      rc:'#44aa22', cat:'Loot',            img:'sprites/earth.webp',   ability:'Chance to find additional rare items when opening chests.' },
+  { id:'fishy',   name:'Fishy Sprite',         rarity:'rare',      rc:'#00bbdd', cat:'Mobility',        img:'sprites/fishy.webp',   ability:'Swim speed way up, plus a brief movement speed boost when you take damage.' },
+  { id:'duck',    name:'Duck Sprite',          rarity:'epic',      rc:'#bb44ff', cat:'Shield/Support',  img:'sprites/duck.webp',    ability:'Emoting or Jamming replenishes your shields.' },
+  { id:'ghost',   name:'Ghost Sprite',         rarity:'epic',      rc:'#bb44ff', cat:'Evasion',         img:'sprites/ghost.webp',   ability:'Grants cloak for a duration upon reloading your weapon.' },
+  { id:'king',    name:'King Sprite',          rarity:'epic',      rc:'#bb44ff', cat:'Combat',          img:'sprites/king.webp',    ability:'Your Pickaxe deals more damage to structures and players.' },
+  { id:'demon',   name:'Demon Sprite',         rarity:'epic',      rc:'#bb44ff', cat:'Life Steal',      img:'sprites/demon.webp',   ability:'Siphon some health and shields when you eliminate an opponent.' },
+  { id:'striker', name:'Striker Sprite',       rarity:'epic',      rc:'#bb44ff', cat:'Mobility',        img:'sprites/striker.webp', ability:'Gain Overdrive when you Mantle, Hurdle, or Wall Scramble.' },
+  { id:'aura',    name:'Aura Sprite',          rarity:'epic',      rc:'#bb44ff', cat:'Combat',          img:'sprites/aura.webp',    ability:'Gain a Shock Rock charge when you deal enough damage to an enemy.' },
+  { id:'dream',   name:'Dream Sprite',         rarity:'legendary', rc:'#ff9900', cat:'Loot',            img:'sprites/dream.webp',   ability:'Grants a random item at each level, exploding with legendary loot at Max Level.' },
+  { id:'punk',    name:'Punk Sprite',          rarity:'legendary', rc:'#ff9900', cat:'Combat',          img:'sprites/punk.webp',    ability:'Possibly nothing… or infinitely something (chance for infinite ammo buff).' },
+  { id:'zerop',   name:'Zero Point Sprite',    rarity:'mythic',    rc:'#00ffcc', cat:'Shield/Support',  img:'sprites/zerop.webp',   ability:'Spawns a Shield Bubble Jr. automatically when you use a healing item.' },
+  { id:'peanut',  name:'Burnt Peanut Sprite',  rarity:'mythic',    rc:'#00ffcc', cat:'Loot',            img:'sprites/peanut.webp',  ability:'When eliminating players, you may find more loot. Sometimes mythic!', noVariants:true },
+  { id:'boss',    name:'Boss Sprite',          rarity:'mythic',    rc:'#00ffcc', cat:'Shield/Support',  img:'sprites/boss.webp',    ability:'Boosts your max Health and Shield above their normal caps.' },
+  { id:'grim',    name:'Grim Reaper Sprite',   rarity:'mythic',    rc:'#00ffcc', cat:'Utility',         img:'sprites/grim.webp',    ability:'Anyone who attacks you gets marked — you can see them through walls.' },
+];
+
+const VARIANTS = [
+  { id:'normal', label:'N',  full:'Normal', color:'#bbb',     cls:'vnorm',   bonus:'' },
+  { id:'gold',   label:'G',  full:'Gold',   color:'#ffd060',  cls:'vgold',   bonus:'+XP from elims' },
+  { id:'gummy',  label:'Gy', full:'Gummy',  color:'#ff88dd',  cls:'vgummy',  bonus:'+Sprite Dust' },
+  { id:'galaxy', label:'Ga', full:'Galaxy', color:'#88ddff',  cls:'vgalaxy', bonus:'+20% ammo' },
+];
+
+const RARITY_ORDER = { rare:0, epic:1, legendary:2, mythic:3 };
+
+const CAT_COLORS = {
+  'Shield/Support':'#00aaff','Damage':'#ff5544','Mobility':'#44ff88',
+  'Loot':'#ffaa22','Evasion':'#aa88ff','Life Steal':'#ff6677',
+  'Combat':'#ff8844','Utility':'#aaaaff',
+};
+
+// State key: "${spriteId}-${variantId}" e.g. "water-gold"
+// ST.david["water-gold"] = { owned: bool, level: 1-5 }
+let ST = { david:{}, emily:{} };
+let mFilters = { owner: 'all', mastered: 'all', variant: 'all', rarity: 'all', view: 'owned' };
+let cF = 'all';
+
+// ── STATE HELPERS ─────────────────────────────────────────────────────────────
+function key(sid, vid) { return sid + '-' + vid; }
+function owned(sid, vid, owner) { return ST[owner][key(sid,vid)]?.owned || false; }
+function getLevel(sid, vid, owner) { return ST[owner][key(sid,vid)]?.level || 1; }
+
+function toggle(sid, vid, owner) {
+  const k = key(sid, vid);
+  if (!ST[owner][k]) ST[owner][k] = { owned: false, level: 1 };
+  ST[owner][k].owned = !ST[owner][k].owned;
+  save(); renderColl(); renderMatch();
+}
+function setLevel(sid, vid, owner, val) {
+  const k = key(sid, vid);
+  if (!ST[owner][k]) ST[owner][k] = { owned: true, level: 1 };
+  ST[owner][k].level = +val;
+  save();
+}
+
+// Which owners have ANY variant of this sprite?
+function spriteOwnership(sid) {
+  const d = VARIANTS.some(v => owned(sid, v.id, 'david'));
+  const e = VARIANTS.some(v => owned(sid, v.id, 'emily'));
+  if (d && e) return 'both';
+  if (d) return 'david';
+  if (e) return 'emily';
+  return 'none';
+}
+
+function save() { localStorage.setItem('fnST3', JSON.stringify(ST)); updateStats(); }
+function load() { try { const s = localStorage.getItem('fnST3'); if(s) ST = JSON.parse(s); } catch(e){} }
+
+function updateStats() {
+  let d=0, e=0, total=0;
+  const seenTotal = new Set();
+  SPRITES.forEach(s => {
+    VARIANTS.forEach(v => {
+      if (owned(s.id, v.id, 'david')) { d++; seenTotal.add(key(s.id,v.id)); }
+      if (owned(s.id, v.id, 'emily')) { e++; seenTotal.add(key(s.id,v.id)); }
+    });
+  });
+  total = seenTotal.size;
+  document.getElementById('hs-total').textContent = total + ' owned';
+  document.getElementById('hs-david').textContent = 'D: ' + d;
+  document.getElementById('hs-emily').textContent = 'E: ' + e;
+}
+
+// ── TABS / FILTERS ────────────────────────────────────────────────────────────
+function setTab(t) {
+  document.getElementById('view-match').style.display = t==='match'?'':'none';
+  document.getElementById('view-coll').style.display  = t==='coll'?'':'none';
+  document.getElementById('tab-match').className = 'tab'+(t==='match'?' active':'');
+  document.getElementById('tab-coll').className  = 'tab'+(t==='coll'?' active':'');
+  if (t === 'match') renderFilterBar();
+}
+const FILTER_DEFS = {
+  owner:    { label:'Owner',   options:[
+    { value:'all',        label:'All Owned' },
+    { value:'david',      label:'David',      color:'#88aaff' },
+    { value:'emily',      label:'Emily',      color:'#ff88cc' },
+  ]},
+  mastered: { label:'Status',  options:[
+    { value:'all',        label:'All' },
+    { value:'mastered',   label:'★ Mastered', color:'#ffd060' },
+    { value:'unmastered', label:'Unmastered' },
+  ]},
+  variant:  { label:'Variant', options:[
+    { value:'all',    label:'All' },
+    { value:'normal', label:'Normal' },
+    { value:'gold',   label:'Gold',   color:'#ffd060' },
+    { value:'gummy',  label:'Gummy',  color:'#ff88dd' },
+    { value:'galaxy', label:'Galaxy', color:'#88ddff' },
+  ]},
+  rarity:   { label:'Rarity',  options:[
+    { value:'all',       label:'All' },
+    { value:'rare',      label:'Rare',      color:'#0088ff' },
+    { value:'epic',      label:'Epic',      color:'#bb44ff' },
+    { value:'legendary', label:'Legendary', color:'#ff9900' },
+    { value:'mythic',    label:'Mythic',    color:'#00ffcc' },
+  ]},
+  view:     { label:'Show',   options:[
+    { value:'owned',   label:'Owned' },
+    { value:'missing', label:'Missing', color:'#ff6666' },
+  ]},
+};
+
+function renderFilterBar() {
+  const bar = document.getElementById('match-filter-bar');
+  bar.innerHTML = Object.entries(FILTER_DEFS).map(([key, def]) => {
+    const cur = mFilters[key];
+    const curOpt = def.options.find(o => o.value === cur) || def.options[0];
+    const isFiltered = cur !== 'all';
+    const label = isFiltered ? curOpt.label : def.label;
+    const color = isFiltered && curOpt.color ? `color:${curOpt.color}` : '';
+    const items = def.options.map(o => `
+      <div class="dd-item${cur===o.value?' active':''}" style="${o.color?'color:'+o.color:''}"
+           onclick="applyFilter('${key}','${o.value}')">${o.label}</div>`).join('');
+    return `
+      <div class="dd" id="dd-${key}">
+        <button class="dd-btn${isFiltered?' on':''}" style="${color}" onclick="toggleDD('${key}',event)">
+          ${label} <span class="dd-chevron">▾</span>
+        </button>
+        <div class="dd-menu" id="dd-menu-${key}">${items}</div>
+      </div>`;
+  }).join('');
+
+  const af = document.getElementById('active-filters');
+  const active = Object.entries(FILTER_DEFS)
+    .filter(([key]) => mFilters[key] !== 'all')
+    .map(([key, def]) => {
+      const opt = def.options.find(o => o.value === mFilters[key]);
+      const col = opt?.color || '#aaa';
+      return `<span class="af-chip" style="color:${col};border-color:${col}33;background:${col}18"
+        onclick="applyFilter('${key}','all')">${def.label}: ${opt?.label}<span class="af-x">✕</span></span>`;
+    });
+  af.innerHTML = active.length
+    ? active.join('')
+    : `<span class="af-none">No filters active</span>`;
+
+  pinFilters();
+}
+
+function toggleDD(key, e) {
+  e.stopPropagation();
+  const menu = document.getElementById('dd-menu-' + key);
+  const wasOpen = menu.classList.contains('open');
+  document.querySelectorAll('.dd-menu').forEach(m => m.classList.remove('open'));
+  if (!wasOpen) menu.classList.add('open');
+}
+
+function applyFilter(key, value) {
+  mFilters[key] = value;
+  document.querySelectorAll('.dd-menu').forEach(m => m.classList.remove('open'));
+  renderFilterBar();
+  renderMatch();
+}
+
+document.addEventListener('click', () => {
+  document.querySelectorAll('.dd-menu').forEach(m => m.classList.remove('open'));
+});
+function cFilter(f, btn) {
+  cF = f;
+  document.querySelectorAll('#view-coll .fbtn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderColl();
+}
+
+// ── MATCH RENDER ──────────────────────────────────────────────────────────────
+function renderMatch() {
+  const el = document.getElementById('match-grid');
+  const { owner: of_, mastered: mf, variant: vf, rarity: rf, view: vw } = mFilters;
+
+  const owners = of_ === 'all' ? ['david','emily'] : [of_];
+  const variantsInScope = vf === 'all' ? VARIANTS : VARIANTS.filter(v => v.id === vf);
+
+  const variantOwned   = (s, v) => owners.some(o => owned(s.id, v.id, o));
+  const variantMissing = (s, v) => !owners.some(o => owned(s.id, v.id, o));
+  const spriteHasOwned   = s => variantsInScope.some(v => variantOwned(s, v));
+  const spriteHasMissing = s => s.noVariants
+    ? !owners.some(o => owned(s.id, 'normal', o))
+    : variantsInScope.some(v => variantMissing(s, v));
+  const spriteHasMastered = s => variantsInScope.some(v =>
+    owners.some(o => owned(s.id, v.id, o) && getLevel(s.id, v.id, o) === 5)
+  );
+
+  const visible = SPRITES.filter(s => {
+    if (rf !== 'all' && s.rarity !== rf) return false;
+    if (vw === 'missing') return spriteHasMissing(s);
+    if (!spriteHasOwned(s)) return false;
+    if (mf === 'mastered'   && !spriteHasMastered(s)) return false;
+    if (mf === 'unmastered' &&  spriteHasMastered(s)) return false;
+    return true;
+  });
+
+  if (!visible.length) {
+    el.innerHTML = `<div class="empty"><h3>No sprites match</h3><p>Try adjusting the filters above.</p></div>`;
+    return;
+  }
+
+  el.innerHTML = visible.map(s => {
+    let chipContent;
+    if (vw === 'missing') {
+      if (s.noVariants) {
+        chipContent = `<span class="chip chip-missing">Not owned</span>`;
+      } else {
+        chipContent = variantsInScope.map(v => {
+          if (variantMissing(s, v)) {
+            return `<span class="chip chip-missing">${v.full}</span>`;
+          }
+          const isMastered = owners.some(o => owned(s.id, v.id, o) && getLevel(s.id, v.id, o) === 5);
+          return `<span class="chip ${v.cls}${isMastered ? ' chip-mastered' : ''}">${v.full}${isMastered ? ' ★' : ''}</span>`;
+        }).join('');
+      }
+    } else {
+      chipContent = variantsInScope
+        .filter(v => variantOwned(s, v))
+        .map(v => {
+          const isMastered = owners.some(o => owned(s.id, v.id, o) && getLevel(s.id, v.id, o) === 5);
+          return `<span class="chip ${v.cls}${isMastered ? ' chip-mastered' : ''}">${v.full}${isMastered ? ' ★' : ''}</span>`;
+        }).join('');
+    }
+
+    return `
+      <div class="match-card" style="border-left-color:${s.rc}; background:${vw==='missing'?'rgba(255,60,60,0.05)':s.rc+'11'}">
+        <div class="micon" style="background:${s.rc}22; border-color:${s.rc}44"><img src="${s.img}" alt="${s.name}" style="width:40px;height:40px;object-fit:contain"></div>
+        <div class="minfo">
+          <div class="mname" style="color:${s.rc}">${s.name}</div>
+          <div class="mability">${s.ability}</div>
+          <div class="mchips" style="margin-top:6px">${chipContent}</div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+// ── COLLECTION RENDER ─────────────────────────────────────────────────────────
+function renderColl() {
+  const sorted = [...SPRITES]
+    .filter(s => cF === 'all' || s.rarity === cF)
+    .sort((a,b) => RARITY_ORDER[a.rarity] - RARITY_ORDER[b.rarity]);
+
+  const el = document.getElementById('coll-grid');
+  el.innerHTML = sorted.map(s => {
+    const ow = spriteOwnership(s.id);
+    let badge = '';
+    if (ow==='both')  badge = `<div class="obadge b">D+E</div>`;
+    else if (ow==='david') badge = `<div class="obadge d">D</div>`;
+    else if (ow==='emily') badge = `<div class="obadge e">E</div>`;
+
+    let ownerRows, vHeaders;
+
+    if (s.noVariants) {
+      // Simple yes/no per owner — no variant grid
+      vHeaders = '';
+      ownerRows = `<div style="display:flex; gap:8px; padding:2px 0">` +
+        ['david','emily'].map(owner => {
+          const isOn = owned(s.id, 'normal', owner);
+          const lvl = getLevel(s.id, 'normal', owner);
+          const mastered = isOn && lvl === 5;
+          const checkCls = isOn ? `on-${owner}${mastered ? ' mastered' : ''}` : '';
+          const lbl = owner === 'david' ? 'David' : 'Emily';
+          const lblCls = owner === 'david' ? 'd' : 'e';
+          const lvlOpts = [1,2,3,4,5].map(n=>`<option value="${n}"${lvl===n?' selected':''}>${n===5?'5 ★':n}</option>`).join('');
+          return `
+            <div style="display:flex; align-items:center; gap:5px; flex:1">
+              <div class="vcheck ${checkCls}" style="cursor:pointer" onclick="toggle('${s.id}','normal','${owner}')">${mastered?'★':isOn?'✓':''}</div>
+              <span class="vrow-label ${lblCls}" style="font-size:11px">${lbl}</span>
+              ${isOn ? `<select class="vlvl${mastered?' mastered':''}" onchange="setLevel('${s.id}','normal','${owner}',this.value)" style="margin-left:auto">${lvlOpts}</select>` : ''}
+            </div>`;
+        }).join('') +
+      `</div>`;
+    } else {
+      // Standard variant grid
+      vHeaders = VARIANTS.map(v =>
+        `<div class="vth" style="color:${v.color}">${v.label}</div>`
+      ).join('');
+
+      ownerRows = ['david','emily'].map(owner => {
+        const lbl = owner === 'david' ? 'D' : 'E';
+        const lblCls = owner === 'david' ? 'd' : 'e';
+        const cells = VARIANTS.map(v => {
+          const isOn = owned(s.id, v.id, owner);
+          const lvl = getLevel(s.id, v.id, owner);
+          const mastered = isOn && lvl === 5;
+          const checkCls = isOn ? `on-${owner}${mastered ? ' mastered' : ''}` : '';
+          const lvlOpts = [1,2,3,4,5].map(n=>`<option value="${n}"${lvl===n?' selected':''}>${n===5?'5 ★':n}</option>`).join('');
+          return `
+            <div class="vcell" onclick="toggle('${s.id}','${v.id}','${owner}')">
+              <div class="vcheck ${checkCls}">${mastered ? '★' : isOn ? '✓' : ''}</div>
+              ${isOn ? `<select class="vlvl${mastered?' mastered':''}" onclick="event.stopPropagation()" onchange="setLevel('${s.id}','${v.id}','${owner}',this.value)">
+                ${lvlOpts}
+              </select>` : ''}
+            </div>`;
+        }).join('');
+        return `
+          <div class="vtable-row">
+            <div class="vrow-label ${lblCls}">${lbl}</div>
+            ${cells}
+          </div>`;
+      }).join('');
+    }
+
+    return `
+      <div class="ccard">
+        ${badge}
+        <div class="ctop" style="background:${s.rc}09">
+          <div class="cicon" style="background:${s.rc}22; border-color:${s.rc}"><img src="${s.img}" alt="${s.name}" style="width:38px;height:38px;object-fit:contain"></div>
+          <div class="rbadge" style="color:${s.rc}; border:1px solid ${s.rc}44">${s.rarity.toUpperCase()}</div>
+          <div class="cname">${s.name}</div>
+          <div class="cability">${s.ability}</div>
+          <div class="catline"><span style="color:${CAT_COLORS[s.cat]||'#888'}">◆ ${s.cat}</span></div>
+        </div>
+        <div class="cdivider"></div>
+        <div class="variant-table">
+          ${vHeaders ? `<div class="vtable-head"><div></div>${vHeaders}</div>` : ''}
+          ${ownerRows}
+        </div>
+      </div>`;
+  }).join('');
+}
+
+// ── SHARE / LOAD ──────────────────────────────────────────────────────────────
+function shareLink() {
+  const encoded = btoa(JSON.stringify(ST));
+  const url = location.href.split('#')[0] + '#' + encoded;
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(url).then(() => showToast('Link copied! Open it on your phone.'));
+  } else {
+    prompt('Copy this link:', url);
+  }
+}
+function loadFromUrl() {
+  const hash = location.hash.slice(1);
+  if (!hash) return false;
+  try {
+    const data = JSON.parse(atob(hash));
+    if (data.david && data.emily) {
+      ST = data;
+      save();
+      history.replaceState(null, '', location.pathname);
+      return true;
+    }
+  } catch(e) {}
+  return false;
+}
+function showToast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 2800);
+}
+
+// ── SEED DATA ─────────────────────────────────────────────────────────────────
+function seedIfEmpty() {
+  const hasAny = Object.values(ST.david).some(v=>v.owned) || Object.values(ST.emily).some(v=>v.owned);
+  if (hasAny) return;
+  // David — confirmed from text labels in photos
+  ST.david['water-normal']   = { owned:true, level:5 };
+  ST.david['king-gold']      = { owned:true, level:3 };
+  ST.david['striker-normal'] = { owned:true, level:2 };
+  // Emily — confirmed from info panels
+  ST.emily['water-normal']   = { owned:true, level:5 };
+  ST.emily['striker-normal'] = { owned:true, level:2 };
+  // Emily — visual ID (high confidence)
+  ST.emily['fire-normal']    = { owned:true, level:5 };
+  ST.emily['duck-normal']    = { owned:true, level:5 };
+  ST.emily['duck-gold']      = { owned:true, level:3 };
+  ST.emily['demon-normal']   = { owned:true, level:4 };
+  ST.emily['grim-normal']    = { owned:true, level:5 };
+  save();
+}
+
+// Run once to add Emily's photo-identified sprites to an existing save
+function migrateEmilyV2() {
+  if (localStorage.getItem('fnST3_v2')) return;
+  const add = (k, level) => { if (!ST.emily[k]?.owned) ST.emily[k] = { owned:true, level }; };
+  add('water-normal',   5);
+  add('striker-normal', 2);
+  add('fire-normal',    5);
+  add('duck-normal',    5);
+  add('duck-gold',      3);
+  add('demon-normal',   4);
+  add('grim-normal',    5);
+  localStorage.setItem('fnST3_v2', '1');
+  save();
+}
+
+// ── QUICK ADD ─────────────────────────────────────────────────────────────────
+let qa = { sprite: null, variant: 'normal', owner: null, level: 1 };
+
+function openSheet() {
+  qa = { sprite: null, variant: 'normal', owner: null, level: 1 };
+  renderSheet();
+  document.getElementById('sheet-overlay').classList.add('open');
+}
+function closeSheet() {
+  document.getElementById('sheet-overlay').classList.remove('open');
+}
+function maybeCloseSheet(e) {
+  if (e.target === document.getElementById('sheet-overlay')) closeSheet();
+}
+
+function renderSheet() {
+  // Sprite picker
+  document.getElementById('sp-picker').innerHTML = SPRITES.map(s => `
+    <div class="sp-btn${qa.sprite===s.id?' sel':''}" onclick="pickSprite('${s.id}')"
+         style="${qa.sprite===s.id?'border-color:'+s.rc+';background:'+s.rc+'22':''}">
+      <img class="sp-img" src="${s.img}" alt="${s.name}">
+      <div class="sp-name" style="${qa.sprite===s.id?'color:'+s.rc:''}">${s.name.replace(' Sprite','')}</div>
+    </div>`).join('');
+
+  // Variant pills — hidden for no-variant sprites
+  const selectedSprite = SPRITES.find(s => s.id === qa.sprite);
+  const variantSection = document.getElementById('sp-variants').closest('div') ||
+    document.getElementById('sp-variants').parentElement;
+  const variantLabel = document.getElementById('sp-variants').previousElementSibling;
+  const noVar = selectedSprite?.noVariants;
+  if (noVar) { qa.variant = 'normal'; }
+  document.getElementById('sp-variants').closest('.sheet').querySelectorAll('[data-variant-section]').forEach(el => {
+    el.style.display = noVar ? 'none' : '';
+  });
+  document.getElementById('sp-variants').innerHTML = noVar ? '' : VARIANTS.map(v => `
+    <div class="pill${qa.variant===v.id?' sel-v':''}"
+         style="${qa.variant===v.id?'border-color:'+v.color+';color:'+v.color+';background:'+v.color+'18':''}"
+         onclick="pickVariant('${v.id}')">${v.full}</div>`).join('');
+
+  // Owner pills
+  document.getElementById('pill-david').className = 'pill' + (qa.owner==='david'?' sel-d':'');
+  document.getElementById('pill-emily').className = 'pill' + (qa.owner==='emily'?' sel-e':'');
+
+  // Level pills
+  document.getElementById('sp-levels').innerHTML = [1,2,3,4,5].map(n => `
+    <div class="pill${qa.level===n?' sel-l':''}" onclick="pickLevel(${n})"
+         style="${n===5?'position:relative':''}">${n===5?'5 ★':n}</div>`).join('');
+
+  // Add button state
+  document.getElementById('add-btn').disabled = !qa.sprite || !qa.owner;
+}
+
+function pickSprite(id)   { qa.sprite  = id;      renderSheet(); }
+function pickVariant(id)  { qa.variant = id;      renderSheet(); }
+function pickOwner(o)     { qa.owner   = o;       renderSheet(); }
+function pickLevel(n)     { qa.level   = n;       renderSheet(); }
+
+function quickAdd() {
+  if (!qa.sprite || !qa.owner) return;
+  const k = key(qa.sprite, qa.variant);
+  if (!ST[qa.owner][k]) ST[qa.owner][k] = { owned: false, level: 1 };
+  ST[qa.owner][k].owned = true;
+  ST[qa.owner][k].level = qa.level;
+  save();
+  renderMatch();
+  renderColl();
+  closeSheet();
+  const s = SPRITES.find(x => x.id === qa.sprite);
+  const v = VARIANTS.find(x => x.id === qa.variant);
+  showToast(`Added ${s.name} (${v.full}) for ${qa.owner === 'david' ? 'David' : 'Emily'}`);
+}
+
+// ── STICKY FILTER POSITIONING ─────────────────────────────────────────────────
+function pinFilters() {
+  const h = document.getElementById('top-bar').offsetHeight;
+  document.querySelectorAll('.filter-section, .filter-bar, .dd-bar').forEach(el => {
+    el.style.top = h + 'px';
+  });
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+load();
+if (!loadFromUrl()) { seedIfEmpty(); migrateEmilyV2(); }
+renderFilterBar();
+renderMatch();
+renderColl();
+updateStats();
+pinFilters();
+window.addEventListener('resize', pinFilters);
+</script>
+</body>
+</html>
