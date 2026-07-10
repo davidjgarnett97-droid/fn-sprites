@@ -80,7 +80,8 @@ header h1 span { color: #66aaff; }
 .chip.vnorm   { background: rgba(160,160,160,0.15); color: #ccc; }
 .chip.vgold   { background: rgba(255,200,0,0.18);   color: #ffd060; }
 .chip.vgummy  { background: rgba(255,80,200,0.18);  color: #ff88dd; }
-.chip.vgalaxy { background: rgba(80,180,255,0.18);  color: #88ddff; }
+.chip.vgalaxy   { background: rgba(80,180,255,0.18);  color: #88ddff; }
+.chip.vholofoil { background: rgba(180,120,255,0.18); color: #cc88ff; }
 .chip.max     { background: rgba(255,208,0,0.2); color: #ffd060; font-weight: 900; }
 .mfoot { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 6px; }
 .mchips { display: flex; gap: 5px; flex-wrap: wrap; }
@@ -97,14 +98,14 @@ header h1 span { color: #66aaff; }
 .cdivider { height: 1px; background: var(--border); }
 
 .variant-table { padding: 7px 8px 8px; width: 100%; }
-.vtable-head { display: grid; grid-template-columns: 36px repeat(4, 1fr); gap: 3px; margin-bottom: 4px; }
+.vtable-head { display: grid; grid-template-columns: 28px repeat(5, 1fr); gap: 2px; margin-bottom: 4px; }
 .vth { font-size: 8px; font-weight: 900; letter-spacing: 0.5px; text-align: center; }
-.vtable-row { display: grid; grid-template-columns: 36px repeat(4, 1fr); gap: 3px; margin-bottom: 6px; }
+.vtable-row { display: grid; grid-template-columns: 28px repeat(5, 1fr); gap: 2px; margin-bottom: 6px; }
 .vrow-label { font-size: 10px; font-weight: 800; display: flex; align-items: flex-start; padding-top: 3px; }
 .vrow-label.p1 { color: #88aaff; }
 .vrow-label.p2 { color: #ff88cc; }
 .vcell { display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
-.vcheck { width: 22px; height: 22px; border-radius: 5px; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 12px; transition: all 0.12s; }
+.vcheck { width: 18px; height: 18px; border-radius: 4px; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 10px; transition: all 0.12s; }
 .vcheck.on-p1 { background: var(--p1); border-color: var(--p1); color: #fff; }
 .vcheck.on-p2 { background: var(--p2); border-color: var(--p2); color: #fff; }
 .vcheck.mastered { box-shadow: 0 0 6px #ffd06099; }
@@ -274,6 +275,7 @@ select.vlvl.mastered { border-color: #ffd060; color: #ffd060; }
     <div class="legend-row"><span style="color:#ffd060">G</span> Gold — +bonus XP from eliminations</div>
     <div class="legend-row"><span style="color:#ff88dd">Gy</span> Gummy — +extra Sprite Dust when extracted</div>
     <div class="legend-row"><span style="color:#88ddff">Ga</span> Galaxy — +20% more ammo from ammo boxes</div>
+    <div class="legend-row"><span style="color:#cc88ff">H</span> Holofoil — +30% squad chance to find rare Sprites from containers</div>
   </div>
   <div class="coll-grid" id="coll-grid"></div>
 </div>
@@ -327,7 +329,8 @@ const VARIANTS = [
   { id:'normal', label:'N',  full:'Normal', color:'#bbb',    cls:'vnorm',   bonus:'' },
   { id:'gold',   label:'G',  full:'Gold',   color:'#ffd060', cls:'vgold',   bonus:'+XP from elims' },
   { id:'gummy',  label:'Gy', full:'Gummy',  color:'#ff88dd', cls:'vgummy',  bonus:'+Sprite Dust' },
-  { id:'galaxy', label:'Ga', full:'Galaxy', color:'#88ddff', cls:'vgalaxy', bonus:'+20% ammo' },
+  { id:'galaxy',   label:'Ga', full:'Galaxy',   color:'#88ddff', cls:'vgalaxy',   bonus:'+20% ammo' },
+  { id:'holofoil', label:'H',  full:'Holofoil', color:'#cc88ff', cls:'vholofoil', bonus:'+30% squad chance to find rare Sprites from containers' },
 ];
 
 const RARITY_ORDER = { rare:0, epic:1, legendary:2, mythic:3 };
@@ -448,7 +451,8 @@ function getFilterDefs() {
       { value:'normal', label:'Normal' },
       { value:'gold',   label:'Gold',   color:'#ffd060' },
       { value:'gummy',  label:'Gummy',  color:'#ff88dd' },
-      { value:'galaxy', label:'Galaxy', color:'#88ddff' },
+      { value:'galaxy',   label:'Galaxy',   color:'#88ddff' },
+      { value:'holofoil', label:'Holofoil', color:'#cc88ff' },
     ]},
     rarity:   { label:'Rarity',  options:[
       { value:'all',       label:'All' },
