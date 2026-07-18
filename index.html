@@ -323,20 +323,20 @@ const fbRef = firebase.database().ref('fnsprites/collection');
 const SPRITES = [
   { id:'water',   name:'Water Sprite',        rarity:'rare',      rc:'#0088ff', cat:'Shield/Support', img:'sprites/water.webp',   ability:'Replenishes shields for you and nearby squadmates while standing in water.' },
   { id:'fire',    name:'Fire Sprite',          rarity:'rare',      rc:'#ff5500', cat:'Damage',          img:'sprites/fire.webp',    ability:'Creates a fiery burst when you deal enough damage to an enemy.' },
-  { id:'earth',   name:'Earth Sprite',         rarity:'rare',      rc:'#44aa22', cat:'Loot',            img:'sprites/earth.webp',   ability:'Chance to find additional rare items when opening chests.' },
-  { id:'fishy',   name:'Fishy Sprite',         rarity:'rare',      rc:'#00bbdd', cat:'Mobility',        img:'sprites/fishy.webp',   ability:'Swim speed way up, plus a brief movement speed boost when you take damage.' },
+  { id:'earth',   name:'Earth Sprite',         rarity:'rare',      rc:'#44aa22', cat:'Loot',            img:'sprites/earth.webp',   ability:'Chance to find additional rare items when opening chests.', noHolofoil:true },
+  { id:'fishy',   name:'Fishy Sprite',         rarity:'rare',      rc:'#00bbdd', cat:'Mobility',        img:'sprites/fishy.webp',   ability:'Swim speed way up, plus a brief movement speed boost when you take damage.', noHolofoil:true },
   { id:'duck',    name:'Duck Sprite',          rarity:'epic',      rc:'#bb44ff', cat:'Shield/Support',  img:'sprites/duck.webp',    ability:'Emoting or Jamming replenishes your shields.' },
   { id:'ghost',   name:'Ghost Sprite',         rarity:'epic',      rc:'#bb44ff', cat:'Evasion',         img:'sprites/ghost.webp',   ability:'Grants cloak for a duration upon reloading your weapon.' },
   { id:'king',    name:'King Sprite',          rarity:'epic',      rc:'#bb44ff', cat:'Combat',          img:'sprites/king.webp',    ability:'Your Pickaxe deals more damage to structures and players.' },
-  { id:'demon',   name:'Demon Sprite',         rarity:'epic',      rc:'#bb44ff', cat:'Life Steal',      img:'sprites/demon.webp',   ability:'Siphon some health and shields when you eliminate an opponent.' },
+  { id:'demon',   name:'Demon Sprite',         rarity:'epic',      rc:'#bb44ff', cat:'Life Steal',      img:'sprites/demon.webp',   ability:'Siphon some health and shields when you eliminate an opponent.', noHolofoil:true },
   { id:'striker', name:'Striker Sprite',       rarity:'epic',      rc:'#bb44ff', cat:'Mobility',        img:'sprites/striker.webp', ability:'Gain Overdrive when you Mantle, Hurdle, or Wall Scramble.' },
-  { id:'aura',    name:'Aura Sprite',          rarity:'epic',      rc:'#bb44ff', cat:'Combat',          img:'sprites/aura.webp',    ability:'Gain a Shock Rock charge when you deal enough damage to an enemy.' },
-  { id:'dream',   name:'Dream Sprite',         rarity:'legendary', rc:'#ff9900', cat:'Loot',            img:'sprites/dream.webp',   ability:'Grants a random item at each level, exploding with legendary loot at Max Level.' },
-  { id:'punk',    name:'Punk Sprite',          rarity:'legendary', rc:'#ff9900', cat:'Combat',          img:'sprites/punk.webp',    ability:'Possibly nothing… or infinitely something (chance for infinite ammo buff).' },
-  { id:'zerop',   name:'Zero Point Sprite',    rarity:'mythic',    rc:'#00ffcc', cat:'Shield/Support',  img:'sprites/zerop.webp',   ability:'Spawns a Shield Bubble Jr. automatically when you use a healing item.' },
+  { id:'aura',    name:'Aura Sprite',          rarity:'epic',      rc:'#bb44ff', cat:'Combat',          img:'sprites/aura.webp',    ability:'Gain a Shock Rock charge when you deal enough damage to an enemy.', noHolofoil:true },
+  { id:'dream',   name:'Dream Sprite',         rarity:'legendary', rc:'#ff9900', cat:'Loot',            img:'sprites/dream.webp',   ability:'Grants a random item at each level, exploding with legendary loot at Max Level.', noHolofoil:true },
+  { id:'punk',    name:'Punk Sprite',          rarity:'legendary', rc:'#ff9900', cat:'Combat',          img:'sprites/punk.webp',    ability:'Possibly nothing… or infinitely something (chance for infinite ammo buff).', noHolofoil:true },
+  { id:'zerop',   name:'Zero Point Sprite',    rarity:'mythic',    rc:'#00ffcc', cat:'Shield/Support',  img:'sprites/zerop.webp',   ability:'Spawns a Shield Bubble Jr. automatically when you use a healing item.', noHolofoil:true },
   { id:'peanut',  name:'Burnt Peanut Sprite',  rarity:'mythic',    rc:'#00ffcc', cat:'Loot',            img:'sprites/peanut.webp',  ability:'When eliminating players, you may find more loot. Sometimes mythic!', noVariants:true },
-  { id:'boss',    name:'Boss Sprite',          rarity:'legendary', rc:'#ff9900', cat:'Shield/Support',  img:'sprites/boss.webp',    ability:'Boosts your max Health and Shield above their normal caps.' },
-  { id:'grim',    name:'Grim Reaper Sprite',   rarity:'mythic',    rc:'#00ffcc', cat:'Utility',         img:'sprites/grim.webp',    ability:'Anyone who attacks you gets marked — you can see them through walls.' },
+  { id:'boss',    name:'Boss Sprite',          rarity:'legendary', rc:'#ff9900', cat:'Shield/Support',  img:'sprites/boss.webp',    ability:'Boosts your max Health and Shield above their normal caps.', noHolofoil:true },
+  { id:'grim',    name:'Grim Reaper Sprite',   rarity:'mythic',    rc:'#00ffcc', cat:'Utility',         img:'sprites/grim.webp',    ability:'Anyone who attacks you gets marked — you can see them through walls.', noHolofoil:true },
   { id:'batman',  name:'Batman Sprite',        rarity:'mythic',    rc:'#00ffcc', cat:'Mobility',        img:'sprites/batman.webp',  ability:'Leap into the air and deploy a Bat Cape to glide down; boosts your odds of finding rare Sprites in chests.' },
   { id:'air',     name:'Air Sprite',           rarity:'rare',      rc:'#0088ff', cat:'Mobility',        img:'sprites/air.webp',     ability:'Boosts sprint speed and jump height, and negates all fall damage.' },
   { id:'seven',   name:'Seven Sprite',         rarity:'legendary', rc:'#ff9900', cat:'Utility',         img:'sprites/seven.webp',   ability:'You and your squad can see nearby enemy footstep trails on the map.' },
@@ -354,6 +354,8 @@ const VARIANTS = [
 
 const RARITY_ORDER = { rare:0, epic:1, legendary:2, mythic:3 };
 const CAT_COLORS = { 'Shield/Support':'#4488ff', 'Damage':'#ff5500', 'Loot':'#44aa22', 'Mobility':'#00bbdd', 'Evasion':'#bb44ff', 'Combat':'#ff9900', 'Life Steal':'#ff4488', 'Utility':'#88ddff' };
+
+function spriteVariants(s) { return s.noHolofoil ? VARIANTS.filter(v => v.id !== 'holofoil') : VARIANTS; }
 
 // State: ST.p1["water-gold"] = { owned: bool, level: 1-5 }
 let ST = { p1:{}, p2:{} };
@@ -559,15 +561,15 @@ function renderMatch() {
 
   const allOwners = activePlayers();
   const owners = of_ === 'all' ? allOwners : (allOwners.includes(of_) ? [of_] : allOwners);
-  const variantsInScope = vf === 'all' ? VARIANTS : VARIANTS.filter(v => v.id === vf);
+  const scopeFor = s => (vf === 'all' ? spriteVariants(s) : spriteVariants(s).filter(v => v.id === vf));
 
   const variantOwned   = (s, v) => owners.some(o => owned(s.id, v.id, o));
   const variantMissing = (s, v) => !owners.some(o => owned(s.id, v.id, o));
-  const spriteHasOwned   = s => variantsInScope.some(v => variantOwned(s, v));
+  const spriteHasOwned   = s => scopeFor(s).some(v => variantOwned(s, v));
   const spriteHasMissing = s => s.noVariants
     ? !owners.some(o => owned(s.id, 'normal', o))
-    : variantsInScope.some(v => variantMissing(s, v));
-  const spriteHasMastered = s => variantsInScope.some(v =>
+    : scopeFor(s).some(v => variantMissing(s, v));
+  const spriteHasMastered = s => scopeFor(s).some(v =>
     owners.some(o => owned(s.id, v.id, o) && getLevel(s.id, v.id, o) === 5)
   );
 
@@ -591,14 +593,14 @@ function renderMatch() {
       if (s.noVariants) {
         chipContent = `<span class="chip chip-missing">Not owned</span>`;
       } else {
-        chipContent = variantsInScope.map(v => {
+        chipContent = scopeFor(s).map(v => {
           if (variantMissing(s, v)) return `<span class="chip chip-missing">${v.full}</span>`;
           const isMastered = owners.some(o => owned(s.id, v.id, o) && getLevel(s.id, v.id, o) === 5);
           return `<span class="chip ${v.cls}${isMastered?' chip-mastered':''}">${v.full}${isMastered?' ★':''}</span>`;
         }).join('');
       }
     } else {
-      chipContent = variantsInScope
+      chipContent = scopeFor(s)
         .filter(v => variantOwned(s, v))
         .map(v => {
           const isMastered = owners.some(o => owned(s.id, v.id, o) && getLevel(s.id, v.id, o) === 5);
@@ -633,7 +635,7 @@ function renderColl() {
     else if (ow==='p1')   badge = `<div class="obadge p1">${playerInitial('p1')}</div>`;
     else if (ow==='p2')   badge = `<div class="obadge p2">${playerInitial('p2')}</div>`;
 
-    let ownerRows, vHeaders;
+    let ownerRows, vHeaders, gridCols = '';
 
     if (s.noVariants) {
       vHeaders = '';
@@ -654,13 +656,15 @@ function renderColl() {
         }).join('') +
       `</div>`;
     } else {
-      vHeaders = VARIANTS.map(v =>
+      const sv = spriteVariants(s);
+      gridCols = `style="grid-template-columns:28px repeat(${sv.length},1fr)"`;
+      vHeaders = sv.map(v =>
         `<div class="vth" style="color:${v.color}">${v.label}</div>`
       ).join('');
 
       ownerRows = players.map(player => {
         const lbl = playerInitial(player);
-        const cells = VARIANTS.map(v => {
+        const cells = sv.map(v => {
           const isOn = owned(s.id, v.id, player);
           const lvl = getLevel(s.id, v.id, player);
           const mastered = isOn && lvl === 5;
@@ -675,7 +679,7 @@ function renderColl() {
             </div>`;
         }).join('');
         return `
-          <div class="vtable-row">
+          <div class="vtable-row" ${gridCols}>
             <div class="vrow-label ${player}">${lbl}</div>
             ${cells}
           </div>`;
@@ -694,7 +698,7 @@ function renderColl() {
         </div>
         <div class="cdivider"></div>
         <div class="variant-table">
-          ${vHeaders ? `<div class="vtable-head"><div></div>${vHeaders}</div>` : ''}
+          ${vHeaders ? `<div class="vtable-head" ${gridCols}><div></div>${vHeaders}</div>` : ''}
           ${ownerRows}
         </div>
       </div>`;
@@ -753,11 +757,13 @@ function renderSheet() {
 
   const selectedSprite = SPRITES.find(s => s.id === qa.sprite);
   const noVar = selectedSprite?.noVariants;
+  const sv = selectedSprite ? spriteVariants(selectedSprite) : VARIANTS;
   if (noVar) qa.variant = 'normal';
+  else if (!sv.some(v => v.id === qa.variant)) qa.variant = 'normal';
   document.getElementById('sheet').querySelectorAll('[data-variant-section]').forEach(el => {
     el.style.display = noVar ? 'none' : '';
   });
-  document.getElementById('sp-variants').innerHTML = noVar ? '' : VARIANTS.map(v => `
+  document.getElementById('sp-variants').innerHTML = noVar ? '' : sv.map(v => `
     <div class="pill${qa.variant===v.id?' sel-v':''}"
          style="${qa.variant===v.id?'border-color:'+v.color+';color:'+v.color+';background:'+v.color+'18':''}"
          onclick="pickVariant('${v.id}')">${v.full}</div>`).join('');
