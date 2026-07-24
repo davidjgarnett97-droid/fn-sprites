@@ -84,6 +84,7 @@ header h1 span { color: #66aaff; }
 .chip.vgummy  { background: rgba(255,80,200,0.18);  color: #ff88dd; }
 .chip.vgalaxy   { background: rgba(80,180,255,0.18);  color: #88ddff; }
 .chip.vholofoil { background: rgba(180,120,255,0.18); color: #cc88ff; }
+.chip.vcube     { background: rgba(102,221,170,0.18); color: #66ddaa; }
 .chip.max     { background: rgba(255,208,0,0.2); color: #ffd060; font-weight: 900; }
 .mfoot { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 6px; }
 .mchips { display: flex; gap: 5px; flex-wrap: wrap; }
@@ -278,6 +279,7 @@ select.vlvl.mastered { border-color: #ffd060; color: #ffd060; }
     <div class="legend-row"><span style="color:#ff88dd">Gy</span> Gummy — +extra Sprite Dust when extracted</div>
     <div class="legend-row"><span style="color:#88ddff">Ga</span> Galaxy — +20% more ammo from ammo boxes</div>
     <div class="legend-row"><span style="color:#cc88ff">H</span> Holofoil — +30% squad chance to find rare Sprites from containers</div>
+    <div class="legend-row"><span style="color:#66ddaa">Cu</span> Cube — Overdrive in the Storm (faster sprint, higher jumps); Earth, Fire, Fishy, Punk, Dream, Boss, Grim &amp; Batman Sprites only</div>
   </div>
   <div class="coll-grid" id="coll-grid"></div>
 </div>
@@ -322,22 +324,22 @@ const fbRef = firebase.database().ref('fnsprites/collection');
 // ── DATA ─────────────────────────────────────────────────────────────────────
 const SPRITES = [
   { id:'water',   name:'Water Sprite',        rarity:'rare',      rc:'#0088ff', cat:'Shield/Support', img:'sprites/water.webp',   ability:'Replenishes shields for you and nearby squadmates while standing in water.' },
-  { id:'fire',    name:'Fire Sprite',          rarity:'rare',      rc:'#ff5500', cat:'Damage',          img:'sprites/fire.webp',    ability:'Creates a fiery burst when you deal enough damage to an enemy.' },
-  { id:'earth',   name:'Earth Sprite',         rarity:'rare',      rc:'#44aa22', cat:'Loot',            img:'sprites/earth.webp',   ability:'Chance to find additional rare items when opening chests.', noHolofoil:true },
-  { id:'fishy',   name:'Fishy Sprite',         rarity:'rare',      rc:'#00bbdd', cat:'Mobility',        img:'sprites/fishy.webp',   ability:'Swim speed way up, plus a brief movement speed boost when you take damage.', noHolofoil:true },
+  { id:'fire',    name:'Fire Sprite',          rarity:'rare',      rc:'#ff5500', cat:'Damage',          img:'sprites/fire.webp',    ability:'Creates a fiery burst when you deal enough damage to an enemy.', hasCube:true },
+  { id:'earth',   name:'Earth Sprite',         rarity:'rare',      rc:'#44aa22', cat:'Loot',            img:'sprites/earth.webp',   ability:'Chance to find additional rare items when opening chests.', noHolofoil:true, hasCube:true },
+  { id:'fishy',   name:'Fishy Sprite',         rarity:'rare',      rc:'#00bbdd', cat:'Mobility',        img:'sprites/fishy.webp',   ability:'Swim speed way up, plus a brief movement speed boost when you take damage.', noHolofoil:true, hasCube:true },
   { id:'duck',    name:'Duck Sprite',          rarity:'epic',      rc:'#bb44ff', cat:'Shield/Support',  img:'sprites/duck.webp',    ability:'Emoting or Jamming replenishes your shields.', noHolofoil:true },
   { id:'ghost',   name:'Ghost Sprite',         rarity:'epic',      rc:'#bb44ff', cat:'Evasion',         img:'sprites/ghost.webp',   ability:'Grants cloak for a duration upon reloading your weapon.' },
   { id:'king',    name:'King Sprite',          rarity:'epic',      rc:'#bb44ff', cat:'Combat',          img:'sprites/king.webp',    ability:'Your Pickaxe deals more damage to structures and players.' },
   { id:'demon',   name:'Demon Sprite',         rarity:'epic',      rc:'#bb44ff', cat:'Life Steal',      img:'sprites/demon.webp',   ability:'Siphon some health and shields when you eliminate an opponent.', noHolofoil:true },
   { id:'striker', name:'Striker Sprite',       rarity:'epic',      rc:'#bb44ff', cat:'Mobility',        img:'sprites/striker.webp', ability:'Gain Overdrive when you Mantle, Hurdle, or Wall Scramble.' },
   { id:'aura',    name:'Aura Sprite',          rarity:'epic',      rc:'#bb44ff', cat:'Combat',          img:'sprites/aura.webp',    ability:'Gain a Shock Rock charge when you deal enough damage to an enemy.', noHolofoil:true },
-  { id:'dream',   name:'Dream Sprite',         rarity:'legendary', rc:'#ff9900', cat:'Loot',            img:'sprites/dream.webp',   ability:'Grants a random item at each level, exploding with legendary loot at Max Level.', noHolofoil:true },
-  { id:'punk',    name:'Punk Sprite',          rarity:'legendary', rc:'#ff9900', cat:'Combat',          img:'sprites/punk.webp',    ability:'Possibly nothing… or infinitely something (chance for infinite ammo buff).', noHolofoil:true },
+  { id:'dream',   name:'Dream Sprite',         rarity:'legendary', rc:'#ff9900', cat:'Loot',            img:'sprites/dream.webp',   ability:'Grants a random item at each level, exploding with legendary loot at Max Level.', noHolofoil:true, hasCube:true },
+  { id:'punk',    name:'Punk Sprite',          rarity:'legendary', rc:'#ff9900', cat:'Combat',          img:'sprites/punk.webp',    ability:'Possibly nothing… or infinitely something (chance for infinite ammo buff).', noHolofoil:true, hasCube:true },
   { id:'zerop',   name:'Zero Point Sprite',    rarity:'mythic',    rc:'#00ffcc', cat:'Shield/Support',  img:'sprites/zerop.webp',   ability:'Spawns a Shield Bubble Jr. automatically when you use a healing item.', noHolofoil:true },
   { id:'peanut',  name:'Burnt Peanut Sprite',  rarity:'mythic',    rc:'#00ffcc', cat:'Loot',            img:'sprites/peanut.webp',  ability:'When eliminating players, you may find more loot. Sometimes mythic!', noVariants:true },
-  { id:'boss',    name:'Boss Sprite',          rarity:'legendary', rc:'#ff9900', cat:'Shield/Support',  img:'sprites/boss.webp',    ability:'Boosts your max Health and Shield above their normal caps.', noHolofoil:true },
-  { id:'grim',    name:'Grim Reaper Sprite',   rarity:'mythic',    rc:'#00ffcc', cat:'Utility',         img:'sprites/grim.webp',    ability:'Anyone who attacks you gets marked — you can see them through walls.', noHolofoil:true },
-  { id:'batman',  name:'Batman Sprite',        rarity:'mythic',    rc:'#00ffcc', cat:'Mobility',        img:'sprites/batman.webp',  ability:'Leap into the air and deploy a Bat Cape to glide down; boosts your odds of finding rare Sprites in chests.' },
+  { id:'boss',    name:'Boss Sprite',          rarity:'legendary', rc:'#ff9900', cat:'Shield/Support',  img:'sprites/boss.webp',    ability:'Boosts your max Health and Shield above their normal caps.', noHolofoil:true, hasCube:true },
+  { id:'grim',    name:'Grim Reaper Sprite',   rarity:'mythic',    rc:'#00ffcc', cat:'Utility',         img:'sprites/grim.webp',    ability:'Anyone who attacks you gets marked — you can see them through walls.', noHolofoil:true, hasCube:true },
+  { id:'batman',  name:'Batman Sprite',        rarity:'mythic',    rc:'#00ffcc', cat:'Mobility',        img:'sprites/batman.webp',  ability:'Leap into the air and deploy a Bat Cape to glide down; boosts your odds of finding rare Sprites in chests.', hasCube:true },
   { id:'air',     name:'Air Sprite',           rarity:'rare',      rc:'#0088ff', cat:'Mobility',        img:'sprites/air.webp',     ability:'Boosts sprint speed and jump height, and negates all fall damage.' },
   { id:'seven',   name:'Seven Sprite',         rarity:'legendary', rc:'#ff9900', cat:'Utility',         img:'sprites/seven.webp',   ability:'You and your squad can see nearby enemy footstep trails on the map.' },
   { id:'pollo',   name:'Pollo Sprite',         rarity:'mythic',    rc:'#00ffcc', cat:'Shield/Support',  img:'sprites/pollo.webp',   ability:'Eliminating an opponent slowly restores shield for you and nearby squadmates.', noVariants:true },
@@ -350,12 +352,18 @@ const VARIANTS = [
   { id:'gummy',  label:'Gy', full:'Gummy',  color:'#ff88dd', cls:'vgummy',  bonus:'+Sprite Dust' },
   { id:'galaxy',   label:'Ga', full:'Galaxy',   color:'#88ddff', cls:'vgalaxy',   bonus:'+20% ammo' },
   { id:'holofoil', label:'H',  full:'Holofoil', color:'#cc88ff', cls:'vholofoil', bonus:'+30% squad chance to find rare Sprites from containers' },
+  { id:'cube',     label:'Cu', full:'Cube',     color:'#66ddaa', cls:'vcube',     bonus:'Overdrive in the Storm (faster sprint, higher jumps)' },
 ];
 
 const RARITY_ORDER = { rare:0, epic:1, legendary:2, mythic:3 };
 const CAT_COLORS = { 'Shield/Support':'#4488ff', 'Damage':'#ff5500', 'Loot':'#44aa22', 'Mobility':'#00bbdd', 'Evasion':'#bb44ff', 'Combat':'#ff9900', 'Life Steal':'#ff4488', 'Utility':'#88ddff' };
 
-function spriteVariants(s) { return s.noHolofoil ? VARIANTS.filter(v => v.id !== 'holofoil') : VARIANTS; }
+function spriteVariants(s) {
+  let list = VARIANTS;
+  if (s.noHolofoil) list = list.filter(v => v.id !== 'holofoil');
+  if (!s.hasCube) list = list.filter(v => v.id !== 'cube');
+  return list;
+}
 
 // State: ST.p1["water-gold"] = { owned: bool, level: 1-5 }
 let ST = { p1:{}, p2:{} };
@@ -475,6 +483,7 @@ function getFilterDefs() {
       { value:'gummy',  label:'Gummy',  color:'#ff88dd' },
       { value:'galaxy',   label:'Galaxy',   color:'#88ddff' },
       { value:'holofoil', label:'Holofoil', color:'#cc88ff' },
+      { value:'cube',     label:'Cube',     color:'#66ddaa' },
     ]},
     rarity:   { label:'Rarity',  options:[
       { value:'all',       label:'All' },
